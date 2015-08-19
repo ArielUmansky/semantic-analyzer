@@ -1,8 +1,7 @@
 == LEAME
 
- Bienvenidos al analizador semántico de textos en español.
-
- Este servicio todavía se encuentra en construcción por lo que la documentación se irá actualizando en la medida de lo posible.
+Bienvenidos al analizador semántico de textos en español.
+Este servicio todavía se encuentra en construcción por lo que la documentación se irá actualizando en la medida de lo posible.
 
 * Ruby version
 
