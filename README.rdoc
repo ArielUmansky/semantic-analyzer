@@ -1,0 +1,10 @@
+== LEAME
+
+ Bienvenidos al analizador semántico de textos en español
+
+* Ruby version
+
+    2.1.6
+
+
+<tt>rake doc:app</tt>.
