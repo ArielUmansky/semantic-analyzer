@@ -55,18 +55,31 @@ RSpec.describe Corpus do
       let(:corpus) { subject }
 
       it "creates an array of documents" do
-        expect(corpus.count).to eq(2)
+        expect(corpus.count).to eq(corpus_arguments.count)
       end
 
       it "the arrays of documents created contains the documents" do
         expect(corpus.documents).to eq(corpus_arguments)
       end
 
-      it "calculates the global term array" do
+      context "vector spaces calculations" do
 
-      end
+        let(:first_vector_space) { corpus.document_vector_list.first.vector_space }
+        let(:second_vector_space) { corpus.document_vector_list.second.vector_space }
 
-      it "calculates the vector space for each document" do
+        let(:river_tfidf_for_first_document) {
+          1.fdiv(13) * Math.log(2.fdiv(1))
+        }
+
+        it "should be 0 for Boca in both documents" do
+          expect(first_vector_space[0]).to eq(0)
+          expect(second_vector_space[0]).to eq(0)
+        end
+
+        it "the be a positive number for the first document and 0 for the secound one for River" do
+          expect(first_vector_space[3]).to eq(river_tfidf_for_first_document)
+          expect(second_vector_space[3]).to eq(0)
+        end
 
       end
 
