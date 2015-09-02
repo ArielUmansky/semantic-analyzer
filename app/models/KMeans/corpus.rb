@@ -58,11 +58,11 @@ class Corpus
     end
 
     def inverse_document_frequency(term)
-      Math.log( nmb_of_docs_that_contains(term) / ( 1 + @document_vector_list.count ) )
+      Math.log( @documents.count.fdiv(nmb_of_docs_that_contains(term)) )
     end
 
     def nmb_of_docs_that_contains(term)
-      @document_vector_list.count { |document_vector| document_vector.contains_term?(term) }
+      @documents.count { |document| document.split.include?(term)}
     end
 
 end
