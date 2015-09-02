@@ -24,7 +24,8 @@ class DocumentVector
 
   def term_frequency(term)
     validate_term(term)
-    @content.scan(term).count.fdiv(@content.split.count)
+    words = @content.split
+    words.count{ |word| word == term}.fdiv(words.count)
   end
 
   private
