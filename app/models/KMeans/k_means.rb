@@ -72,7 +72,7 @@ class KMeans
       #FIXME: Make a refactor. Tell don't ask
 
       previous_clusters.each do |previous_cluster, cluster_index|
-        if !previous_cluster[cluster_index].grouped_documents.map{ |dv| actual_clusters[cluster_index].grouped_documents.include?(dv)}.all?
+        unless previous_cluster[cluster_index].grouped_documents.map{ |dv| actual_clusters[cluster_index].grouped_documents.include?(dv)}.all?
           return false
         end
       end
