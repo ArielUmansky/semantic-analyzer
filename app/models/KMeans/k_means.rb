@@ -15,7 +15,7 @@ class KMeans
       previous_cluster_center = centroids
 
       corpus.document_vector_list.each do |document|#TODO
-        result_set[find_closest_cluster_center(centroids, document)].grouped_documents.add(document)
+        result_set[find_closest_cluster_center(centroids, document)].grouped_documents << document
       end
 
       centroids = initialize_cluster_centroid(centroids.count) #TODO: Review this
@@ -32,7 +32,6 @@ class KMeans
 
   end
 
-  private
 
     def initialize_centroids(corpus, number_of_centroids)
       centroids = Array.new

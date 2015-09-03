@@ -37,7 +37,7 @@ class Corpus
     end
 
     def initialize_set_of_terms(array_of_strings)
-      Set.new(array_of_strings.map { |d| d.tr!((MEANINGLESS_CHARS), ""); d.split (' ')}.flatten)
+      Set.new(array_of_strings.map { |d| sieve_document!(d); d.split (' ')}.flatten)
     end
 
     def validate_documents(array_of_strings)
@@ -70,6 +70,10 @@ class Corpus
 
     def nmb_of_docs_that_contains(term)
       @documents.count { |document| document.split.include?(term)}
+    end
+
+    def sieve_document!(document)
+      document = document.tr((MEANINGLESS_CHARS), "")#.parameterize
     end
 
 end
