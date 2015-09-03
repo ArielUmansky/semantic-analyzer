@@ -40,7 +40,7 @@ class KMeans
       uniq_random = generate_random_set(corpus.count, number_of_centroids)
 
       uniq_random.each { |random|
-        centroid = Centroid.new
+        centroid = Cluster.new
         centroid.add_document(corpus.document_vector_list[random])
         centroids << centroid
       }
@@ -55,14 +55,14 @@ class KMeans
     def initialize_cluster_centroid(count)
       centroids = Array.new
       count.times do |index|
-        centroids[index] = Centroid.new
+        centroids[index] = Cluster.new
       end
       centroids
     end
 
     def calculate_mean_points(clusters)
       clusters.each do |cluster|
-        cluster.grouped_documents[0].vector_space = cluster.grouped_documents[0].vector_space.avg #TODO: Check this
+        cluster.update_centroid_vector_space
       end
     end
 
@@ -80,10 +80,10 @@ class KMeans
       true
     end
 
-    def find_closest_cluster_center(centroids, document)
+    def find_closest_cluster_center(clusters, document)
       similarity_measure = Array.new
-      centroids.each_with_index do |centroid, index|
-        similarity_measure[index] = cosine_similarity(centroid.first_vector_space, document.vector_space)
+      clusters.each_with_index do |cluster, index|
+        similarity_measure[index] = cosine_similarity(cluster.centroid_vector_space, document.vector_space)
       end
       similarity_measure.index(similarity_measure.max)
     end
