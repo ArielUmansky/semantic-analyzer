@@ -71,4 +71,57 @@ RSpec.describe Cluster do
 
   end
 
+  describe "#same_cluster?" do
+
+    before do
+      corpus = Corpus.new([noticia1, noticia2])
+      document_vector1 = corpus.document_vector_list.first
+      document_vector2 = corpus.document_vector_list.second
+    end
+
+
+    let(:cluster1) { Cluster.new }
+    let(:cluster2) { Cluster.new }
+
+
+    subject { cluster1.same_cluster?(cluster2) }
+
+    context "when clusters are different" do
+
+      it "returns false" do
+        cluster1.add_document document_vector1
+        cluster2.add_document document_vector2
+        expect( subject ).to be false
+      end
+
+
+    end
+
+    context "when cluster are the same" do
+
+      it "returns true" do
+        cluster1.add_document document_vector1
+        cluster1.add_document document_vector2
+
+        cluster2.add_document document_vector1
+        cluster2.add_document document_vector2
+
+        expect( subject ).to be true
+      end
+
+    end
+
+    context "when the documents are the same but the order is different" do
+      it "returns false" do
+        cluster1.add_document document_vector1
+        cluster1.add_document document_vector2
+
+        cluster2.add_document document_vector2
+        cluster2.add_document document_vector1
+
+        expect( subject ).to be false
+      end
+    end
+
+  end
 end

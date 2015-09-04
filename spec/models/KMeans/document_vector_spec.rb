@@ -6,6 +6,7 @@ require_all 'app/models/'
 RSpec.describe DocumentVector do
 
   let(:noticia) {  "Boca venció a River por 5 a 0 en el clásico de verano"}
+  let(:noticia2) { "Tras la goleada, los afiches de Boca gastando a las gallinas, empapelaron la ciudad"}
 
   describe "#initialize" do
 
@@ -147,6 +148,36 @@ RSpec.describe DocumentVector do
 
     end
 
+  end
+
+  describe "#same_vector_space?" do
+
+    let(:corpus) { Corpus.new(corpus_arguments)}
+
+    let(:document_vector1) { corpus.document_vector_list.first }
+    let(:document_vector2) { corpus.document_vector_list.second }
+
+    subject { document_vector1.same_vector_space?(document_vector2) }
+
+    context "when vector spaces are different" do
+
+      let(:corpus_arguments) { [noticia, noticia2] }
+
+      it "returns false" do
+        expect( subject ).to be false
+      end
+
+    end
+
+    context "when vector spaces are the same" do
+
+      let(:corpus_arguments) { [noticia, noticia] }
+
+      it "returns true" do
+        expect( subject ).to be true
+      end
+
+    end
   end
 
 end
