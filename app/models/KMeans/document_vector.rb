@@ -28,6 +28,11 @@ class DocumentVector
     words.count(term).fdiv(words.count)
   end
 
+  def same_vector_space?(other_vector_space)
+    @vector_space.count == other_vector_space.vector_space.count &&
+        @vector_space.zip(other_vector_space.vector_space).all?{ |a, b| a==b }
+  end
+
   private
 
     def validate_content(content)
