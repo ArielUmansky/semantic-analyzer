@@ -2,6 +2,12 @@ class Corpus
 
   MEANINGLESS_CHARS = ",."
 
+  SPANISH_PREPOSITIONS = ["a", "ante", "bajo", "cabe", "con", "contra", "de", "desde", "en", "entre", "hacia", "hasta",
+                          "para", "por", "según", "sin", "so", "sobre", "tras"]
+
+  SPANISH_TRIVIAL_WORDS = ["el", "la", "lo", "los", "las", "este", "ese", "estos", "estas", "esos", "esas", "mi", "tu",
+                      "que", "y", "o", "si", "no", "se", "del", "su"]
+
   def initialize(input_data)
     validate_documents(input_data)
     array_of_strings = input_data #Because the rest has a side effect on the string
@@ -23,6 +29,8 @@ class Corpus
   private
 
     def initialize_document_list(array_of_strings)
+
+      #array_of_strings = apply_heuristic_filters(input_array_of_strings)
 
       @set_of_terms = initialize_set_of_terms(array_of_strings)
 
@@ -74,6 +82,10 @@ class Corpus
 
     def sieve_document!(document)
       document = document.tr((MEANINGLESS_CHARS), "")#.parameterize
+    end
+
+    def apply_heuristic_filters(array_of_strings)
+      array_of_strings.map { |document| document.split.reject { |term| SPANISH_TRIVIAL_WORDS.include?(term) || SPANISH_PREPOSITIONS.include?(term) }.join(" ") }
     end
 
 end
