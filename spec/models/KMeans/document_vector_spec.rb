@@ -140,7 +140,7 @@ RSpec.describe DocumentVector do
 
         let(:term) { "Foo" }
 
-        it "returns true" do
+        it "returns false" do
           expect(subject).to be(false)
         end
 

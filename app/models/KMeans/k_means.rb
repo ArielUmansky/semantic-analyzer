@@ -14,11 +14,10 @@ class KMeans
 
       previous_cluster_center = centroids
 
-      corpus.document_vector_list.each do |document|#TODO
+      corpus.document_vector_list.each do |document|
         result_set[find_closest_cluster_center(centroids, document)].grouped_documents << document
       end
 
-      centroids = initialize_cluster_centroid(centroids.count) #TODO: Review this
       centroids = calculate_mean_points(result_set)
 
       should_stop = check_stopping_criteria(previous_cluster_center, centroids)
@@ -29,6 +28,8 @@ class KMeans
 
       break if should_stop
     end
+
+    result_set
 
   end
 
@@ -60,19 +61,21 @@ class KMeans
   end
 
   def calculate_mean_points(clusters)
+    new_centroids = Array.new
     clusters.each do |cluster|
-      cluster.update_centroid_vector_space
+      new_centroids << cluster.generate_new_centroid
     end
+    new_centroids
   end
 
   def check_stopping_criteria(previous_clusters, actual_clusters)
-    previous_clusters.zip(actual_clusters).all?{ |prev, actual| prev.same_cluster?(actual)}
+    previous_clusters.zip(actual_clusters).all?{ |prev, actual| prev.same_centroid?(actual)}
   end
 
-  def find_closest_cluster_center(clusters, document)
+  def find_closest_cluster_center(centroids, document)
     similarity_measure = Array.new
-    clusters.each_with_index do |cluster, index|
-      similarity_measure[index] = cosine_similarity(cluster.centroid_vector_space, document.vector_space)
+    centroids.each_with_index do |centroid, index|
+      similarity_measure[index] = cosine_similarity(centroid.centroid_vector_space, document.vector_space)
     end
     similarity_measure.index(similarity_measure.max)
   end

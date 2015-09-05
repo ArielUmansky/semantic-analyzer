@@ -24,12 +24,20 @@ class Cluster
     @grouped_documents.map{ |document_vector| document_vector.vector_space }.transpose
   end
 
-  def update_centroid_vector_space
-    centroid.vector_space = array_of_vector_spaces_by_position.map{ |array_element| array_element.sum.to_f / array_element.count}
+  def calculate_mean_vector_space
+    array_of_vector_spaces_by_position.map{ |array_element| array_element.sum.to_f / array_element.count}
   end
 
-  def same_cluster?(other_cluster)
-    @grouped_documents.zip(other_cluster.grouped_documents).all? { |a, b| a.same_vector_space?(b)}
+  def same_centroid?(other_cluster)
+    centroid.same_vector_space?(other_cluster.centroid)
+  end
+
+  def generate_new_centroid
+    new_centroid = Cluster.new
+    new_document_vector = DocumentVector.new(centroid.content)
+    new_document_vector.vector_space = calculate_mean_vector_space
+    new_centroid.add_document(new_document_vector)
+    new_centroid
   end
 
 end

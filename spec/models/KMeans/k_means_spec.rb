@@ -27,8 +27,8 @@ RSpec.describe KMeans do
   it "works" do
     pending
     kmeans = KMeans.new
-    kmeans.execute(corpus)
-    expect(corpus.document_vector_list.first).to be (noticia1_grupo1)
+    result_set = kmeans.execute(corpus)
+    expect(result_set).to be (noticia1_grupo1)
   end
 
 end

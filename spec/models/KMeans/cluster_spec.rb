@@ -43,9 +43,9 @@ RSpec.describe Cluster do
   end
 
 
-  describe "#update_centroid_vector_space" do
+  describe "#calculate_mean_vector_space" do
 
-    subject { cluster.update_centroid_vector_space }
+    subject { cluster.calculate_mean_vector_space }
 
     let(:array_of_vector_spaces_by_position) { cluster.array_of_vector_spaces_by_position}
     let(:avg_first_position) { 0.0 }
@@ -71,7 +71,7 @@ RSpec.describe Cluster do
 
   end
 
-  describe "#same_cluster?" do
+  describe "#same_centroid?" do
 
     before do
       corpus = Corpus.new([noticia1, noticia2])
@@ -84,9 +84,9 @@ RSpec.describe Cluster do
     let(:cluster2) { Cluster.new }
 
 
-    subject { cluster1.same_cluster?(cluster2) }
+    subject { cluster1.same_centroid?(cluster2) }
 
-    context "when clusters are different" do
+    context "when cluster's centroids are different" do
 
       it "returns false" do
         cluster1.add_document document_vector1
@@ -97,7 +97,7 @@ RSpec.describe Cluster do
 
     end
 
-    context "when cluster are the same" do
+    context "when cluster's centroids are the same" do
 
       it "returns true" do
         cluster1.add_document document_vector1
