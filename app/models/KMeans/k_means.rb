@@ -94,4 +94,8 @@ class KMeans
     Math.sqrt(squares.inject(0) {|s, c| s + c})
   end
 
+  def pretty_result_set(result_set)
+    result_set.map{|centroid| centroid.grouped_documents.map { |document_vector| document_vector.content } }
+  end
+
 end
