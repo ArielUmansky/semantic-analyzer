@@ -23,11 +23,35 @@ RSpec.describe KMeans do
 
   let(:metadata) { nil }
 
-  it "works" do
-    pending
-    kmeans = KMeans.new
-    result_set = kmeans.pretty_result_set(kmeans.execute(corpus_arguments, metadata))
-    expect(result_set).to eq([])
+  let(:kmeans) { KMeans.new }
+
+  describe "#execute" do
+
+    subject { kmeans.execute(corpus_arguments, metadata) }
+
+    it "works" do
+      #pending
+      result_set = kmeans.pretty_result_set(subject)
+      expect(result_set).to eq([])
+    end
   end
+
+
+  describe "#cosine_similarity" do
+
+    let(:vector_space_A) { [0.2, 0.1, 10, 10, 0, 0.5, 10, 0, 1, 0.2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] }
+    let(:vector_space_B) { [0, 1, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }
+    let(:distant_vector_space) { [10, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }
+
+    it "returns greater results between vectors that are similar" do
+      high_similarity = kmeans.cosine_similarity(vector_space_A, vector_space_B)
+      low_similarity1 = kmeans.cosine_similarity(vector_space_A, distant_vector_space)
+      low_similarity2 = kmeans.cosine_similarity(vector_space_B, distant_vector_space)
+
+      expect(high_similarity > low_similarity1).to be true
+      expect(high_similarity > low_similarity2).to be true
+    end
+  end
+
 
 end
