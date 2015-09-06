@@ -27,7 +27,7 @@ RSpec.describe KMeans do
     pending
     kmeans = KMeans.new
     result_set = kmeans.pretty_result_set(kmeans.execute(corpus_arguments, metadata))
-    expect(result_set).to eq()
+    expect(result_set).to eq([])
   end
 
 end
