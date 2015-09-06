@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
 
-  get "analyzer" => "analyzer#perform"
+  post "analyzer" => "analyzer#perform"
 
 end
