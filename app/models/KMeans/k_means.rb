@@ -1,12 +1,21 @@
 class KMeans
 
+  #TODO: Retrieve NUMBER_OF_CENTROIDS
+  #TODO: Check for clusters with no elements. Evaluate where to validate that
+
   def initialize
-    @number_of_centroids = 2
+    @number_of_centroids = 1
   end
 
-  def execute(corpus)
+  def name
+    Analyzer::KMEANS
+  end
 
-    centroids = initialize_centroids(corpus, @number_of_centroids) #TODO: Retrieve NUMBER_OF_CENTROIDS
+  def execute(input_corpus, metadata)
+
+    corpus = process_input(input_corpus)
+
+    centroids = initialize_centroids(corpus, @number_of_centroids)
 
     result_set = initialize_cluster_centroid(centroids.count)
 
@@ -96,6 +105,10 @@ class KMeans
 
   def pretty_result_set(result_set)
     result_set.map{|centroid| centroid.grouped_documents.map { |document_vector| document_vector.content } }
+  end
+
+  def process_input(input_corpus)
+    Corpus.new(input_corpus)
   end
 
 end
