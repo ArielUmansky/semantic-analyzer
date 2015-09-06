@@ -68,7 +68,7 @@ RSpec.describe Corpus do
         let(:second_vector_space) { corpus.document_vector_list.second.vector_space }
 
         let(:river_tfidf_for_first_document) {
-          1.fdiv(13) * Math.log(2.fdiv(1))
+          1.fdiv(7) * Math.log(2.fdiv(1))
         }
 
         it "should be 0 for Boca in both documents" do

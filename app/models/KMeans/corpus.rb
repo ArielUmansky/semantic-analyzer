@@ -22,19 +22,25 @@ class Corpus
     @document_vector_list.count
   end
 
-  def documents
+  def document_vector_contents
     @document_vector_list.map { |document_vector| document_vector.content }
+  end
+
+  def documents
+    @documents
   end
 
   private
 
-    def initialize_document_list(array_of_strings)
+    def initialize_document_list(input_array_of_strings)
 
-      #array_of_strings = apply_heuristic_filters(input_array_of_strings)
+      @documents = input_array_of_strings
+
+      array_of_strings = apply_heuristic_filters(input_array_of_strings)
 
       @set_of_terms = initialize_set_of_terms(array_of_strings)
 
-      @documents = array_of_strings
+      @modified_documents = array_of_strings
 
       @document_vector_list = Array.new
       array_of_strings.each do |document|
@@ -73,11 +79,11 @@ class Corpus
     end
 
     def inverse_document_frequency(term)
-      Math.log( @documents.count.fdiv(nmb_of_docs_that_contains(term)) )
+      Math.log( @modified_documents.count.fdiv(nmb_of_docs_that_contains(term)) )
     end
 
     def nmb_of_docs_that_contains(term)
-      @documents.count { |document| document.split.include?(term)}
+      @modified_documents.count { |document| document.split.include?(term)}
     end
 
     def sieve_document!(document)

@@ -15,6 +15,8 @@ RSpec.describe Cluster do
 
   let(:cluster) { Cluster.new }
 
+  let(:amount_of_different_terms) { 14 }
+
   before do
     cluster.add_document(document_vector1)
     cluster.add_document(document_vector2)
@@ -25,7 +27,7 @@ RSpec.describe Cluster do
     subject { cluster.array_of_vector_spaces_by_position }
 
     it "generates a correct sized array" do
-      expect(subject.count).to eq(22)
+      expect(subject.count).to eq(amount_of_different_terms)
     end
 
     it "each position should be an array of two elements" do
@@ -37,7 +39,7 @@ RSpec.describe Cluster do
     #This is tf-idf for "Boca" and "venció" for the first and for the second document
     it "groups the vector spaces for each position" do
       expect(subject.first).to match_array([0.0, 0.0])
-      expect(subject.second).to match_array([0.053319013889226566, 0.0])
+      expect(subject.second).to match_array([0.09902102579427789, 0.0])
     end
 
   end
@@ -49,10 +51,10 @@ RSpec.describe Cluster do
 
     let(:array_of_vector_spaces_by_position) { cluster.array_of_vector_spaces_by_position}
     let(:avg_first_position) { 0.0 }
-    let(:avg_second_position) { 0.026659506944613283 }
+    let(:avg_second_position) { 0.049510512897138946 }
 
     it "generates a correct sized array" do
-      expect(subject.count).to eq(22)
+      expect(subject.count).to eq(amount_of_different_terms)
     end
 
     it "each position should be a tf-idf value" do
