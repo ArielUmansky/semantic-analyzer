@@ -87,7 +87,7 @@ RSpec.describe DocumentVector do
       let(:term) { "Boca" }
 
       it "calculates the term frequency correctly" do
-        expect(subject).to eq(1.fdiv(13))
+        expect(subject).to eq(1.fdiv(13) * KMeans::NAME_WEIGHT_HEURISTIC)
       end
 
     end

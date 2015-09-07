@@ -68,7 +68,7 @@ RSpec.describe Corpus do
         let(:second_vector_space) { corpus.document_vector_list.second.vector_space }
 
         let(:river_tfidf_for_first_document) {
-          1.fdiv(7) * Math.log(2.fdiv(1))
+          1.fdiv(7) * Math.log(2.fdiv(1)) * KMeans::NAME_WEIGHT_HEURISTIC
         }
 
         it "should be 0 for Boca in both documents" do
@@ -76,7 +76,7 @@ RSpec.describe Corpus do
           expect(second_vector_space[0]).to eq(0)
         end
 
-        it "the be a positive number for the first document and 0 for the secound one for River" do
+        it "should be a positive number for the first document and 0 for the second one for River" do
           expect(first_vector_space[3]).to eq(river_tfidf_for_first_document)
           expect(second_vector_space[3]).to eq(0)
         end
