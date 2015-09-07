@@ -53,5 +53,32 @@ RSpec.describe KMeans do
     end
   end
 
+  describe "#find_closest_cluster_center" do
+
+    let(:corpus) { Corpus.new(corpus_arguments) }
+
+    let(:document) { corpus.document_vector_list[4] }
+
+    let(:test_centroids) {
+      [corpus.document_vector_list[1], corpus.document_vector_list[3], corpus.document_vector_list[6]]
+    }
+
+    it "returns the index of the closest centroid" do
+      centroids = Array.new
+
+      test_centroids.each do |document|
+        centroid = Cluster.new
+        centroid.add_document(document)
+        centroids << centroid
+      end
+
+      expect(kmeans.find_closest_cluster_center(centroids, document)).to eq(1)
+
+    end
+
+
+  end
+
+
 
 end
