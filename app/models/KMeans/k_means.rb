@@ -5,7 +5,7 @@ class KMeans
   #TODO: I think there is an optimization available: I could add the inverse document frequency of the terms in the set  of terms since that's a metric whose value is the same regardless the document
 
   def initialize
-    @number_of_centroids = 3
+    @number_of_centroids = 4
   end
 
   def name
@@ -47,7 +47,7 @@ class KMeans
   def initialize_centroids(corpus, number_of_centroids)
     centroids = Array.new
 
-    uniq_random = generate_random_set(corpus.count, number_of_centroids)
+    uniq_random = generate_random_set(corpus.count - 1, number_of_centroids)
 
     uniq_random.each { |random|
       centroid = Cluster.new

@@ -10,14 +10,29 @@ class Cluster
 
   def add_document(document_vector)
     @grouped_documents << document_vector
+    @vector_space_size = document_vector.vector_space.count if @vector_space_size.nil?
   end
 
   def centroid
-    @grouped_documents.first
+    if @grouped_documents
+      @grouped_documents.first
+    else
+      empty_document_vector
+    end
+  end
+
+  def empty_document_vector
+    result = DocumentVector.new(DocumentVector::EMPTY_CONTENT)
+    result.vector_space = Array.new(@vector_space_size, 0.0)
+    result
   end
 
   def centroid_vector_space
     centroid.vector_space
+  end
+
+  def has_documents?
+    @grouped_documents.any?
   end
 
   def array_of_vector_spaces_by_position
