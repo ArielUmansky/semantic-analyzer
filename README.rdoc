@@ -1,8 +1,40 @@
-== LEAME
+== README
 
-Bienvenidos al analizador semántico de textos en español.
-Este servicio todavía se encuentra en construcción por lo que la documentación se irá actualizando en la medida de lo posible.
+Welcome to the semantic analyzer service that clusters spanish texts.
+This service is still under development so the documentation will be updated according to the advancements.
 
-* Ruby version
+=== API
 
-    2.1.6
+This service exposes a REST API. The followings are the supported APIs so far:
+
+* POST /analyzer
+ 
+This route permits to the user of the service to cluster data that should be in de request body. Also the client can configure other data, like the algorithm used by the analyzer and the metadata of the corpus.
+
+The algorithm supported by the date is: kmeans. 
+
+The service is implemented in such a way that will be easy to add new algorithms in the future. 
+
+The body admits the following parameters:
+
+    { 
+        corpus: ... // Array of string representing the corpus to be clustered. Each string should be a document
+        algorithm: ... // Optional. Should be one of the algorithms supported. The service uses Kmeans by default if the client doesn't specify any
+        metadata: ... // Should be a hash including metadata for the algorithm used. Each algorithm specifies its own metadata
+    }
+
+KMeans:
+
+Kmeans is one of the most common algorithms of machine learning. This service uses it togheter with cosine similarity and tf-idf to model the documents and cluster them.
+
+This algorithm requires the amount of clusters before its execution. Therefore, the client must specify that in one of the following params in the metadata of the body:
+
+    {
+        nmb_of_centroids: ... // Should be a number specifying explicitly the number of clusters
+        cluster_size: ... // Should be a number specifying an estimate of the size of each cluster. With this data, the service can infer the number of clusters
+    }
+
+If the user doesn't specify one if this fields in the metadata, the user will receive HTTP Status 422: Unprocessable Entity. 
+
+
+
