@@ -4,6 +4,8 @@ class KMeans
   #TODO: I think there is an optimization available: I could add the inverse document frequency of the terms in the set  of terms since that's a metric whose value is the same regardless the document
 
   NUMBER_OF_CENTROIDS_EXCEPTION = "The service cannot infer the number of centroids for Kmeans algorithm. Please read the documentation and add the required metadata"
+  NAME_WEIGHT_HEURISTIC = 200
+
 
   def name
     Analyzer::KMEANS

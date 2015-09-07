@@ -25,7 +25,15 @@ class DocumentVector
   def term_frequency(term)
     validate_term(term)
     words = @content.split
-    words.count(term).fdiv(words.count)
+    result = words.count(term).fdiv(words.count)
+    if name?(term)
+      result = result * KMeans::NAME_WEIGHT_HEURISTIC
+    end
+    result
+  end
+
+  def name?(term)
+    term.first == term.first.upcase
   end
 
   def same_vector_space?(other_vector_space)
