@@ -2,9 +2,10 @@ class KMeans
 
   #TODO: Retrieve NUMBER_OF_CENTROIDS
   #TODO: Check for clusters with no elements. Evaluate where to validate that
+  #TODO: I think there is an optimization available: I could add the inverse document frequency of the terms in the set  of terms since that's a metric whose value is the same regardless the document
 
   def initialize
-    @number_of_centroids = 1
+    @number_of_centroids = 3
   end
 
   def name

@@ -51,7 +51,7 @@ class Corpus
     end
 
     def initialize_set_of_terms(array_of_strings)
-      Set.new(array_of_strings.map { |d| sieve_document!(d); d.split (' ')}.flatten)
+      Set.new(array_of_strings.map { |d| d.split (' ')}.flatten)
     end
 
     def validate_documents(array_of_strings)
@@ -86,12 +86,12 @@ class Corpus
       @modified_documents.count { |document| document.split.include?(term)}
     end
 
-    def sieve_document!(document)
-      document = document.tr((MEANINGLESS_CHARS), "")#.parameterize
+    def sieve_document(document)
+      document.tr((MEANINGLESS_CHARS), "")
     end
 
     def apply_heuristic_filters(array_of_strings)
-      array_of_strings.map { |document| document.split.reject { |term| SPANISH_TRIVIAL_WORDS.include?(term) || SPANISH_PREPOSITIONS.include?(term) }.join(" ") }
+      array_of_strings.map { |document| document = sieve_document(document); document.split.reject { |term| SPANISH_TRIVIAL_WORDS.include?(term) || SPANISH_PREPOSITIONS.include?(term) }.join(" ") }
     end
 
 end
