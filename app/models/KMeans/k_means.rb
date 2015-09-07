@@ -1,18 +1,17 @@
 class KMeans
 
-  #TODO: Retrieve NUMBER_OF_CENTROIDS
   #TODO: Check for clusters with no elements. Evaluate where to validate that
   #TODO: I think there is an optimization available: I could add the inverse document frequency of the terms in the set  of terms since that's a metric whose value is the same regardless the document
 
-  def initialize
-    @number_of_centroids = 4
-  end
+  NUMBER_OF_CENTROIDS_EXCEPTION = "The service cannot infer the number of centroids for Kmeans algorithm. Please read the documentation and add the required metadata"
 
   def name
     Analyzer::KMEANS
   end
 
   def execute(input_corpus, metadata)
+
+    set_number_of_centroids(input_corpus, metadata)
 
     corpus = process_input(input_corpus)
 
@@ -110,6 +109,18 @@ class KMeans
 
   def process_input(input_corpus)
     Corpus.new(input_corpus)
+  end
+
+  def set_number_of_centroids(input_corpus, metadata)
+    validate_metadata(metadata)
+    @number_of_centroids = metadata[:nmb_of_centroids].to_i if metadata.key?(:nmb_of_centroids)
+    @number_of_centroids = input_corpus.count / metadata[:cluster_size].to_i if @number_of_centroids.nil?
+  end
+
+  def validate_metadata(metadata)
+    if metadata.nil? || !metadata.is_a?(Hash) || (!metadata.key?(:nmb_of_centroids) && !metadata.key?(:cluster_size))
+      raise KMeans::NUMBER_OF_CENTROIDS_EXCEPTION
+    end
   end
 
 end

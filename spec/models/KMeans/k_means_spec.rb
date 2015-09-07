@@ -21,7 +21,11 @@ RSpec.describe KMeans do
 
   let(:corpus_arguments) {[noticia1_grupo1, noticia2_grupo1, noticia3_grupo1, noticia1_grupo2, noticia2_grupo2, noticia1_grupo3, noticia2_grupo3]}
 
-  let(:metadata) { nil }
+  let(:metadata) do
+    {
+        nmb_of_centroids: 4
+    }
+  end
 
   let(:kmeans) { KMeans.new }
 
@@ -32,10 +36,10 @@ RSpec.describe KMeans do
     it "works" do
       #pending
       result_set = kmeans.pretty_result_set(subject)
-      expect(result_set).to eq([])
+      expect(result_set).to be_a(Array)
     end
-  end
 
+  end
 
   describe "#cosine_similarity" do
 
@@ -76,9 +80,6 @@ RSpec.describe KMeans do
 
     end
 
-
   end
-
-
 
 end

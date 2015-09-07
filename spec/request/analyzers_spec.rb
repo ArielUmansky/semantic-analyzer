@@ -48,13 +48,36 @@ RSpec.describe "Analyzer", :type => :request do
 
       end
 
+      context "when kmeans is the algorithm selected" do
+
+        context "when the required metadata is missing" do
+          let(:req_params) do
+            {
+                body: { corpus: ["foo"],
+                        algorithm: Analyzer::KMEANS }
+            }
+          end
+
+          it "returns bad request" do
+            subject
+            expect(response).to have_http_status(:unprocessable_entity)
+          end
+        end
+
+      end
+
     end
 
     context "when request is correct" do
       let(:req_params) do
         {
-            body: { corpus: corpus,
-                    algorithm: algorithm }
+            body: {
+                corpus: corpus,
+                algorithm: algorithm,
+                metadata: {
+                  nmb_of_centroids: 4
+                }
+            }
         }
       end
 
