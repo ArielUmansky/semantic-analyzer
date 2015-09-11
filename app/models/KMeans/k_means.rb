@@ -1,6 +1,5 @@
 class KMeans
 
-  #TODO: Check for clusters with no elements. Evaluate where to validate that
   #TODO: I think there is an optimization available: I could add the inverse document frequency of the terms in the set  of terms since that's a metric whose value is the same regardless the document
 
   NUMBER_OF_CENTROIDS_EXCEPTION = "The service cannot infer the number of centroids for Kmeans algorithm. Please read the documentation and add the required metadata"
@@ -110,7 +109,7 @@ class KMeans
   end
 
   def process_input(input_corpus)
-    Corpus.new(input_corpus)
+    Corpus.new(input_corpus.map{ |document_hash| document_hash[:document] })
   end
 
   def set_number_of_centroids(input_corpus, metadata)

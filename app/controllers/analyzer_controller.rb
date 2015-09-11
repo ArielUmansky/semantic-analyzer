@@ -15,7 +15,14 @@ class AnalyzerController < ApplicationController
   private
 
   def check_params
-     params.require(:body).require(:corpus)
+     params.require(:body).require(:corpus).each do |document_input|
+       if document_input.respond_to?(:require)
+         document_input.require(:document)
+       else
+         raise ActionController::ParameterMissing.new("document")
+       end
+     end
+     params.require(:body).permit(corpus: [:category, :keywords])
      params.require(:body).permit(:algorithm, :metadata)
   end
 
