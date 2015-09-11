@@ -81,7 +81,7 @@ RSpec.describe "Analyzer", :type => :request do
         }
       end
 
-      let(:corpus) { ["foo", "bar", "foo2", "foo bar", "etc etc", "bla etc", "deberia andar siempre esto por fa", "es jodido eh esto bla etc"] }
+      let(:corpus) { [ { document: "foo", category: "politics", keywords: ["foo"] }, { document:"bar", category: "sports", keywords: ["bar"] } ] }
       let(:algorithm) {Analyzer::KMEANS }
 
       it "returns http status ok" do
