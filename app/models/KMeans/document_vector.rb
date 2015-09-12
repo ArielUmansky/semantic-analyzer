@@ -1,8 +1,9 @@
 class DocumentVector
 
-  def initialize(content)
-    validate_content(content)
-    @content = content
+  def initialize(content, category: nil, keywords: [])
+    @content = validate_content(content)
+    @category = validate_category(category)
+    @keywords = validate_keywords(keywords)
   end
 
   def vector_space=(vector_space)
@@ -15,6 +16,14 @@ class DocumentVector
 
   def content
     @content
+  end
+
+  def category
+    @category
+  end
+
+  def keywords
+    @keywords
   end
 
   def contains_term?(term)
@@ -47,10 +56,26 @@ class DocumentVector
       if content.nil? || !content.is_a?(String)
         raise Analyzer::WRONG_INPUT_EXCEPTION
       end
+      content
+    end
+
+    def validate_category(category)
+      unless category.nil? || category.is_a?(String)
+        raise Analyzer::WRONG_INPUT_EXCEPTION
+      end
+      category
+    end
+
+    def validate_keywords(keywords)
+      unless keywords.is_a?(Array) && keywords.all? { |k| k.is_a?(String) }
+        raise Analyzer::WRONG_INPUT_EXCEPTION
+      end
+      keywords
     end
 
     def validate_term(term)
       validate_content(term)
     end
+
 
 end
