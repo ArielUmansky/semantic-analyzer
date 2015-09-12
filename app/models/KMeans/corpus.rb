@@ -10,8 +10,7 @@ class Corpus
 
   def initialize(input_data)
     validate_documents(input_data)
-    array_of_strings = input_data #Because the rest has a side effect on the string
-    initialize_document_list(array_of_strings)
+    initialize_document_list(input_data)
   end
 
   def document_vector_list
@@ -32,19 +31,19 @@ class Corpus
 
   private
 
-    def initialize_document_list(input_array_of_strings)
+    def initialize_document_list(input_array_of_documents)
 
-      @documents = input_array_of_strings
+      @documents = input_array_of_documents.map{ |document_hash| document_hash[:document] }
 
-      array_of_strings = apply_heuristic_filters(input_array_of_strings)
+      @modified_documents_hashes = apply_heuristic_filters!(input_array_of_documents)
 
-      @set_of_terms = initialize_set_of_terms(array_of_strings)
+      @modified_documents = @modified_documents_hashes.map{ |document_hash| document_hash[:document] }
 
-      @modified_documents = array_of_strings
+      @set_of_terms = initialize_set_of_terms(@modified_documents)
 
       @document_vector_list = Array.new
-      array_of_strings.each do |document|
-        document_vector = DocumentVector.new(document)
+      @modified_documents_hashes.each do |document_hash|
+        document_vector = DocumentVector.new(document_hash)
         calculate_vector_space!(document_vector)
         @document_vector_list << document_vector
       end
@@ -54,13 +53,13 @@ class Corpus
       Set.new(array_of_strings.map { |d| d.split (' ')}.flatten)
     end
 
-    def validate_documents(array_of_strings)
-      if array_of_strings.nil? || !array_of_strings.is_a?(Array)
+    def validate_documents(array_of_hashes)
+      if array_of_hashes.nil? || !array_of_hashes.is_a?(Array)
         raise Analyzer::WRONG_INPUT_EXCEPTION
       end
 
-      array_of_strings.each do |document|
-        if !document.is_a?(String) || document.blank?
+      array_of_hashes.each do |document|
+        if !document.is_a?(Hash)
           raise Analyzer::WRONG_INPUT_EXCEPTION
         end
       end
@@ -90,8 +89,17 @@ class Corpus
       document.tr((MEANINGLESS_CHARS), "")
     end
 
-    def apply_heuristic_filters(array_of_strings)
-      array_of_strings.map { |document| document = sieve_document(document); document.split.reject { |term| SPANISH_TRIVIAL_WORDS.include?(term) || SPANISH_PREPOSITIONS.include?(term) }.join(" ") }
+    def apply_heuristic_filters!(array_of_hashes)
+      new_array = Array.new
+      array_of_hashes.each do |document_hash|
+        new_hash = Hash.new
+        new_hash[:document] = sieve_document(document_hash[:document])
+        new_hash[:document] = new_hash[:document].split.reject { |term| SPANISH_TRIVIAL_WORDS.include?(term) || SPANISH_PREPOSITIONS.include?(term) }.join(" ")
+        new_hash[:category] = document_hash[:category]
+        new_hash[:keywords] = document_hash[:keywords]
+        new_array << new_hash
+      end
+      new_array
     end
 
 end
