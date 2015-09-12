@@ -36,7 +36,7 @@ RSpec.describe Corpus do
 
       end
 
-      context "when input data isn't an array of strings" do
+      context "when input data isn't an array of hashes" do
 
         let(:corpus_arguments) { [1, 2, 3] }
 
@@ -50,7 +50,7 @@ RSpec.describe Corpus do
 
     context "when input data is valid" do
 
-      let(:corpus_arguments) { [noticia1_grupo1, noticia2_grupo1] }
+      let(:corpus_arguments) { [ {document: noticia1_grupo1 }, {document: noticia2_grupo1}] }
 
       let(:corpus) { subject }
 
@@ -59,7 +59,7 @@ RSpec.describe Corpus do
       end
 
       it "the arrays of documents created contains the documents" do
-        expect(corpus.documents).to eq(corpus_arguments)
+        expect(corpus.documents).to eq(corpus_arguments.map{|hash| hash[:document]})
       end
 
       context "vector spaces calculations" do
