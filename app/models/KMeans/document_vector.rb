@@ -1,9 +1,9 @@
 class DocumentVector
 
-  def initialize(content, category: nil, keywords: [])
-    @content = validate_content(content)
-    @category = validate_category(category)
-    @keywords = validate_keywords(keywords)
+  def initialize(document_hash)
+    @content = validate_content(document_hash)
+    @category = validate_category(document_hash[:category]) if document_hash[:category]
+    @keywords = validate_keywords(document_hash[:keywords]) if document_hash[:keywords]
   end
 
   def vector_space=(vector_space)
@@ -52,18 +52,22 @@ class DocumentVector
 
   private
 
-    def validate_content(content)
-      if content.nil? || !content.is_a?(String)
+    def validate_content(input_hash)
+      if input_hash.nil? || !input_hash.is_a?(Hash) || !input_hash[:document]
         raise Analyzer::WRONG_INPUT_EXCEPTION
       end
-      content
+      input_hash[:document]
+    end
+
+    def validate_and_return_string(string)
+      unless string.is_a?(String)
+        raise Analyzer::WRONG_INPUT_EXCEPTION
+      end
+      string
     end
 
     def validate_category(category)
-      unless category.nil? || category.is_a?(String)
-        raise Analyzer::WRONG_INPUT_EXCEPTION
-      end
-      category
+      validate_and_return_string(category)
     end
 
     def validate_keywords(keywords)
@@ -74,7 +78,7 @@ class DocumentVector
     end
 
     def validate_term(term)
-      validate_content(term)
+      validate_and_return_string(term)
     end
 
 

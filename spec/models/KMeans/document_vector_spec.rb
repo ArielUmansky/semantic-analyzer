@@ -10,15 +10,16 @@ RSpec.describe DocumentVector do
 
   describe "#initialize" do
 
-    subject { DocumentVector.new(document) }
+    subject { DocumentVector.new(document_hash) }
 
     context "when data input data is invalid" do
 
       # I prefer repeating some code instead of using shared examples. I simply hate them.
 
-      let(:document) { nil }
 
       context "when input data is empty" do
+
+        let(:document_hash) { nil }
 
         it "fails correctly" do
           expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION)
@@ -26,9 +27,9 @@ RSpec.describe DocumentVector do
 
       end
 
-      context "when input data isn't a string" do
+      context "when input data isn't a hash" do
 
-        let(:document) { ["some_foo_param"] }
+        let(:document_hash) { ["some_foo_param"] }
 
         it "fails correctly" do
           expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION)
@@ -40,7 +41,11 @@ RSpec.describe DocumentVector do
 
     context "when input data is valid" do
 
-      let(:document) { noticia }
+      let(:document_hash) do
+        {
+            document: noticia
+        }
+      end
 
       let(:document_vector) { subject }
 
@@ -52,14 +57,17 @@ RSpec.describe DocumentVector do
 
     context "when there is a category passed in the constructor" do
 
-      subject { DocumentVector.new(document, category: category) }
-
-      let(:document) { noticia }
+      let(:document_hash) do
+        {
+            document: noticia,
+            category: category
+        }
+      end
 
       context "when category isn't a string" do
         let(:category) { 123 }
         it "fails correctly" do
-          expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION) #TODO: Verify this clause. The exception's class is not being tested (I can change the class and the test will still be green)
+          expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION)
         end
       end
 
@@ -74,10 +82,12 @@ RSpec.describe DocumentVector do
 
     context "when there are keywords passed in the constructor" do
 
-      subject { DocumentVector.new(document, keywords: keywords) }
-
-      let(:document) { noticia }
-
+      let(:document_hash) do
+        {
+            document: noticia,
+            keywords: keywords
+        }
+      end
       context "when keywords are not an array" do
         let(:keywords) { 123 }
         it "fails correctly" do
@@ -107,7 +117,13 @@ RSpec.describe DocumentVector do
 
     subject { document_vector.term_frequency(term) }
 
-    let(:document_vector) { DocumentVector.new(noticia) }
+    let(:document_hash) do
+      {
+          document: noticia
+      }
+    end
+
+    let(:document_vector) { DocumentVector.new(document_hash) }
 
     context "when input data is incorrect" do
 
@@ -149,7 +165,13 @@ RSpec.describe DocumentVector do
 
     subject { document_vector.contains_term?(term) }
 
-    let(:document_vector) { DocumentVector.new(noticia) }
+    let(:document_hash) do
+      {
+          document: noticia
+      }
+    end
+
+    let(:document_vector) { DocumentVector.new(document_hash) }
 
     context "when input data is incorrect" do
 
@@ -212,7 +234,7 @@ RSpec.describe DocumentVector do
 
     context "when vector spaces are different" do
 
-      let(:corpus_arguments) { [noticia, noticia2] }
+      let(:corpus_arguments) { [{document: noticia}, {document: noticia2}] }
 
       it "returns false" do
         expect( subject ).to be false
@@ -222,7 +244,7 @@ RSpec.describe DocumentVector do
 
     context "when vector spaces are the same" do
 
-      let(:corpus_arguments) { [noticia, noticia] }
+      let(:corpus_arguments) { [{document: noticia}, {document: noticia}] }
 
       it "returns true" do
         expect( subject ).to be true
