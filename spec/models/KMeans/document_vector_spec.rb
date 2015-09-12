@@ -10,13 +10,13 @@ RSpec.describe DocumentVector do
 
   describe "#initialize" do
 
-    subject { DocumentVector.new(document_vector_arguments) }
+    subject { DocumentVector.new(document) }
 
     context "when data input data is invalid" do
 
       # I prefer repeating some code instead of using shared examples. I simply hate them.
 
-      let(:document_vector_arguments) { nil }
+      let(:document) { nil }
 
       context "when input data is empty" do
 
@@ -28,7 +28,7 @@ RSpec.describe DocumentVector do
 
       context "when input data isn't a string" do
 
-        let(:document_vector_arguments) { ["some_foo_param"] }
+        let(:document) { ["some_foo_param"] }
 
         it "fails correctly" do
           expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION)
@@ -40,7 +40,7 @@ RSpec.describe DocumentVector do
 
     context "when input data is valid" do
 
-      let(:document_vector_arguments) { noticia }
+      let(:document) { noticia }
 
       let(:document_vector) { subject }
 
@@ -48,6 +48,57 @@ RSpec.describe DocumentVector do
         expect(document_vector.content).to eq(noticia)
       end
 
+    end
+
+    context "when there is a category passed in the constructor" do
+
+      subject { DocumentVector.new(document, category: category) }
+
+      let(:document) { noticia }
+
+      context "when category isn't a string" do
+        let(:category) { 123 }
+        it "fails correctly" do
+          expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION) #TODO: Verify this clause. The exception's class is not being tested (I can change the class and the test will still be green)
+        end
+      end
+
+      context "when category is a string" do
+        let(:category) { "a_string" }
+        let(:document_vector) { subject }
+        it "sets the category" do
+          expect(document_vector.category).to eq(category)
+        end
+      end
+    end
+
+    context "when there are keywords passed in the constructor" do
+
+      subject { DocumentVector.new(document, keywords: keywords) }
+
+      let(:document) { noticia }
+
+      context "when keywords are not an array" do
+        let(:keywords) { 123 }
+        it "fails correctly" do
+          expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION)
+        end
+      end
+
+      context "when keywords are not an array of strings" do
+        let(:keywords) { [123, "foo"] }
+        it "fails correctly" do
+          expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION)
+        end
+      end
+
+      context "when keywords are an array of strings" do
+        let(:keywords) { ["a_string", "another_string"] }
+        let(:document_vector) { subject }
+        it "sets the category" do
+          expect(document_vector.keywords).to eq(keywords)
+        end
+      end
     end
 
   end
