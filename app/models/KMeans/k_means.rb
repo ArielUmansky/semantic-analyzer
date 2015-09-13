@@ -3,6 +3,7 @@ class KMeans
   #TODO: I think there is an optimization available: I could add the inverse document frequency of the terms in the set  of terms since that's a metric whose value is the same regardless the document
 
   NUMBER_OF_CENTROIDS_EXCEPTION = "The service cannot infer the number of centroids for Kmeans algorithm. Please read the documentation and add the required metadata"
+  TOO_MANY_CENTROIDS_EXCEPTION = "There amount of centroids cannot be greater than the amount of documents"
   NAME_WEIGHT_HEURISTIC = 200
 
 
@@ -158,13 +159,18 @@ class KMeans
   end
 
   def process_input(input_corpus)
-    Corpus.new(input_corpus.map{ |document_hash| document_hash[:document] })
+    Corpus.new(input_corpus)
   end
 
   def set_number_of_centroids(input_corpus, metadata)
     validate_metadata(metadata)
     @number_of_centroids = metadata[:nmb_of_centroids].to_i if metadata.key?(:nmb_of_centroids)
     @number_of_centroids = input_corpus.count / metadata[:cluster_size].to_i if @number_of_centroids.nil?
+
+    if @number_of_centroids > input_corpus.count
+      raise KMeans::TOO_MANY_CENTROIDS_EXCEPTION
+    end
+
   end
 
   def validate_metadata(metadata)
