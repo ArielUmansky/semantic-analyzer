@@ -18,16 +18,24 @@ RSpec.describe KMeans do
   let(:noticia1_grupo3) { "Scioli venció en las PASO nacionales con un 38% de los votos. Cambiemos, con el segundo lugar, en conjunto sumó un 31%. La tercera fuerza fue el Frente Renovador, con los aportes de Massa y De La Sota"}
   let(:noticia2_grupo3) { "El Frente para la Victoria alcanzó el primer lugar en las PASO nacionales con un 38% de los votos. Macri, con un 24% dentro de la interna de Cambiemos, es el segundo candidato en la carrera presidencial hacia Octubre, Massa ocupó el tercer lugar, con un 11% de los votos"}
 
+  let(:noticia1_grupo4) { "Pablo Trapero ganó el premio al mejor director en el festival de Venecia por El Clan"}
 
-  let(:corpus_arguments) {[noticia1_grupo1, noticia2_grupo1, noticia3_grupo1, noticia1_grupo2, noticia2_grupo2, noticia1_grupo3, noticia2_grupo3]}
+
+  let(:corpus_arguments) {[{document: noticia1_grupo1}, {document: noticia2_grupo1}, {document: noticia3_grupo1},
+                           {document: noticia1_grupo2}, {document: noticia2_grupo2}, {document: noticia1_grupo3},
+                           {document: noticia2_grupo3}]}
 
   let(:metadata) do
     {
-        nmb_of_centroids: 4
+        nmb_of_centroids: number_of_centroids
     }
   end
 
+  let(:number_of_centroids) { 4 }
+
   let(:kmeans) { KMeans.new }
+
+  let(:corpus) { Corpus.new(corpus_arguments) }
 
   describe "#execute" do
 
@@ -59,8 +67,6 @@ RSpec.describe KMeans do
 
   describe "#find_closest_cluster_center" do
 
-    let(:corpus) { Corpus.new(corpus_arguments) }
-
     let(:document) { corpus.document_vector_list[4] }
 
     let(:test_centroids) {
@@ -79,6 +85,97 @@ RSpec.describe KMeans do
       expect(kmeans.find_closest_cluster_center(centroids, document)).to eq(1)
 
     end
+
+  end
+
+  describe "#initialize_centroids" do
+
+    before(:each){
+      kmeans.set_number_of_centroids(corpus, metadata)
+    }
+
+    subject { kmeans.initialize_centroids(corpus) }
+
+    context "when there aren't categories" do
+
+
+      it "the centroids are chosen randomly" do
+        centroids = subject
+        expect(centroids.count).to eq(number_of_centroids)
+      end
+
+    end
+
+    context "when there are categories" do
+
+      let(:politica) { "política" }
+      let(:deportes) { "deportes" }
+      let(:internacionales) { "internacionales" }
+      let(:espectaculos) { "espectáculos" }
+
+      let(:corpus_arguments){ [{document: noticia1_grupo1, category: internacionales}, {document: noticia2_grupo1, category: internacionales}, {document: noticia3_grupo1, category: internacionales},
+                              {document: noticia1_grupo2, category: deportes}, {document: noticia2_grupo2, category: deportes},
+                              {document: noticia1_grupo3, category: politica}, {document: noticia2_grupo3, category:politica},
+                              {document: noticia1_grupo4, category: espectaculos}]}
+
+      before(:each){
+        kmeans.instance_variable_set(:@set_of_categories, categories)
+      }
+
+      context "when there is the same amount of centroids than categories" do
+
+        let(:categories) { [politica, deportes, internacionales, espectaculos]}
+
+        it "generates an array whose size is equals to the number of centroids" do
+          centroids = subject
+          expect(centroids.count).to eq(number_of_centroids)
+        end
+
+        it "each centroid has a different category" do
+          centroids = subject
+          expect(Set.new(centroids.map { |centroid| centroid.category }).count).to eq(number_of_centroids)
+        end
+
+      end
+
+      context "when there are more categories than centroids" do
+
+        let(:categories) { [internacionales, deportes]}
+
+        let(:corpus_arguments){ [{document: noticia1_grupo1, category: internacionales}, {document: noticia2_grupo1, category: internacionales}, {document: noticia3_grupo1, category: internacionales},
+                                 {document: noticia1_grupo2, category: deportes}, {document: noticia2_grupo2, category: deportes}]}
+
+        it "generates an array whose size is equals to the number of centroids" do
+          centroids = subject
+          expect(centroids.count).to eq(number_of_centroids)
+        end
+
+        it "each centroid has a different category" do
+          centroids = subject
+          expect(Set.new(centroids.map { |centroid| centroid.category }).count).to eq(categories.count)
+        end
+
+      end
+
+      context "when there are less categories than centroids" do
+
+        let(:number_of_centroids) { 3 }
+        let(:categories) { [politica, deportes, internacionales, espectaculos]}
+
+        it "generates an array whose size is equals to the number of centroids" do
+          centroids = subject
+          expect(centroids.count).to eq(number_of_centroids)
+        end
+
+        it "there will be a centroid for each category limited by the number of centroids" do
+          centroids = subject
+          expect(Set.new(centroids.map { |centroid| centroid.category }).count).to eq(number_of_centroids)
+        end
+
+      end
+
+    end
+
 
   end
 

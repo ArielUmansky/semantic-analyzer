@@ -12,11 +12,13 @@ class KMeans
 
   def execute(input_corpus, metadata)
 
-    set_number_of_centroids(input_corpus, metadata)
+    set_number_of_centroids(input_corpus, metadata) #TODO: tests for this
+
+    @set_of_categories = initialize_categories(input_corpus)
 
     corpus = process_input(input_corpus)
 
-    centroids = initialize_centroids(corpus, @number_of_centroids)
+    centroids = initialize_centroids(corpus)
 
     result_set = initialize_cluster_centroid(centroids.count)
 
@@ -44,18 +46,65 @@ class KMeans
   end
 
 
-  def initialize_centroids(corpus, number_of_centroids)
+  def initialize_centroids(corpus)
+    if @set_of_categories
+      category_initialization(corpus)
+    else
+      random_initialization(corpus)
+    end
+  end
+
+  def category_initialization(corpus)
+    centroids = Array.new
+    categories = @set_of_categories.take(@number_of_centroids)
+    categories.each do |category|
+      doc_cat_array = corpus.documents_of_category(category)
+
+      if centroids.empty?
+        doc_hash = doc_cat_array.first
+      else
+        doc_hash = doc_cat_array.find{|dh| !centroids_include?(centroids, document: dh[:document]) }
+      end
+
+      pos = corpus.position_of(doc_hash[:document])
+      centroids << create_centroid(corpus, pos)
+    end
+
+    if categories.count < @number_of_centroids
+      c=0
+      centroids_missing = @number_of_centroids - categories.count
+      while centroids_missing > c do
+        uniq_random = generate_random_set(corpus.count - 1, 1).first
+        unless centroids_include?(centroids, document: corpus.document_vector_list[uniq_random].content)
+          centroids << create_centroid(corpus, uniq_random)
+          c = c + 1
+        end
+      end
+    end
+
+    centroids
+  end
+
+  def centroids_include?(centroids, document: )
+    centroids.any? { |centroid| centroid.centroid.content==document}
+  end
+
+  def random_initialization(corpus)
     centroids = Array.new
 
-    uniq_random = generate_random_set(corpus.count - 1, number_of_centroids)
+    uniq_random = generate_random_set(corpus.count - 1, @number_of_centroids)
 
     uniq_random.each { |random|
-      centroid = Cluster.new
-      centroid.add_document(corpus.document_vector_list[random])
-      centroids << centroid
+      centroids << create_centroid(corpus, random)
     }
 
     centroids
+  end
+
+  def create_centroid(corpus, position)
+    centroid = Cluster.new
+    centroid.add_document(corpus.document_vector_list[position])
+    centroid
   end
 
   def generate_random_set(possible_numbers, set_size)
@@ -122,6 +171,10 @@ class KMeans
     if metadata.nil? || !metadata.is_a?(Hash) || (!metadata.key?(:nmb_of_centroids) && !metadata.key?(:cluster_size))
       raise KMeans::NUMBER_OF_CENTROIDS_EXCEPTION
     end
+  end
+
+  def initialize_categories(input_corpus)
+    Set.new( input_corpus.map{|hash| hash[:category]} )
   end
 
 end
