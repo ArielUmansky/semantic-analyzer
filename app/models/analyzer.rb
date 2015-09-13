@@ -4,7 +4,7 @@ require_all "app/models/"
 
 class Analyzer
 
-  WRONG_INPUT_EXCEPTION = "Wrong input format. The format must be an array of not-empty strings"
+  WRONG_INPUT_EXCEPTION = "Wrong input format. The format must be an array hashes that represents valid documents"
   UNSUPPORTED_ALGORITHM_EXCEPTION = "The specified algorithm is not supported"
   KMEANS = "kmeans"
 

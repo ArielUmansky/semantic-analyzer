@@ -75,7 +75,7 @@ RSpec.describe "Analyzer", :type => :request do
                 corpus: corpus,
                 algorithm: algorithm,
                 metadata: {
-                  nmb_of_centroids: 4
+                  nmb_of_centroids: 2
                 }
             }
         }
