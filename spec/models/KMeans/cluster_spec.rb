@@ -8,7 +8,7 @@ RSpec.describe Cluster do
   let(:noticia1) { "Boca venció a River por 5 a 0 en el clásico de verano" }
   let(:noticia2) { "Tras la goleada, los afiches de Boca gastando a las gallinas, empapelaron la ciudad" }
 
-  let(:corpus){ Corpus.new([noticia1, noticia2])}
+  let(:corpus){ Corpus.new([{document: noticia1}, {document: noticia2}])}
 
   let(:document_vector1) { corpus.document_vector_list.first }
   let(:document_vector2) { corpus.document_vector_list.second }
@@ -76,7 +76,7 @@ RSpec.describe Cluster do
   describe "#same_centroid?" do
 
     before do
-      corpus = Corpus.new([noticia1, noticia2])
+      corpus = Corpus.new([{document: noticia1}, {document: noticia2}])
       document_vector1 = corpus.document_vector_list.first
       document_vector2 = corpus.document_vector_list.second
     end

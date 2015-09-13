@@ -21,6 +21,10 @@ class Cluster
     end
   end
 
+  def category
+    centroid.category
+  end
+
   def empty_document_vector
     result = DocumentVector.new(DocumentVector::EMPTY_CONTENT)
     result.vector_space = Array.new(@vector_space_size, 0.0)
@@ -49,7 +53,7 @@ class Cluster
 
   def generate_new_centroid
     new_centroid = Cluster.new
-    new_document_vector = DocumentVector.new(centroid.content)
+    new_document_vector = DocumentVector.new({document: centroid.content})
     new_document_vector.vector_space = calculate_mean_vector_space
     new_centroid.add_document(new_document_vector)
     new_centroid
