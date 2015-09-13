@@ -29,6 +29,14 @@ class Corpus
     @documents
   end
 
+  def documents_of_category(category)
+    @modified_documents_hashes.select{ |document_hash| document_hash[:category] == category}
+  end
+
+  def position_of(document)
+    @document_vector_list.find_index { |document_vector| document_vector.content == document}
+  end
+
   private
 
     def initialize_document_list(input_array_of_documents)
