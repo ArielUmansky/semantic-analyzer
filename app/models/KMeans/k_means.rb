@@ -5,7 +5,7 @@ class KMeans
   NUMBER_OF_CENTROIDS_EXCEPTION = "The service cannot infer the number of centroids for Kmeans algorithm. Please read the documentation and add the required metadata"
   TOO_MANY_CENTROIDS_EXCEPTION = "There amount of centroids cannot be greater than the amount of documents"
   NAME_WEIGHT_HEURISTIC = 200
-
+  CATEGORY_WEIGHT_HEURISTIC = 1
 
   def name
     Analyzer::KMEANS
@@ -55,9 +55,10 @@ class KMeans
     end
   end
 
+  #TODO: Pending an evaluation for a refactor. Covered with tests!
   def category_initialization(corpus)
     centroids = Array.new
-    categories = @set_of_categories.take(@number_of_centroids)
+    categories = @set_of_categories.to_a.shuffle.take(@number_of_centroids)
     categories.each do |category|
       doc_cat_array = corpus.documents_of_category(category)
 
@@ -135,9 +136,24 @@ class KMeans
   def find_closest_cluster_center(centroids, document)
     similarity_measure = Array.new
     centroids.each_with_index do |centroid, index|
-      similarity_measure[index] = cosine_similarity(centroid.centroid_vector_space, document.vector_space)
+      similarity_measure[index] = calculate_similarity_measure(centroid, document)
     end
     similarity_measure.index(similarity_measure.max)
+  end
+
+  def calculate_similarity_measure(centroid, document)
+    similarity = cosine_similarity(centroid.centroid_vector_space, document.vector_space)
+
+    similarity = category_weight_heuristic(centroid, document, similarity)
+
+    similarity
+  end
+
+  def category_weight_heuristic(centroid, document, similarity)
+    if centroid.category && document.category && centroid.category == document.category
+      similarity = similarity + KMeans::CATEGORY_WEIGHT_HEURISTIC
+    end
+    similarity
   end
 
   def cosine_similarity(a, b)
