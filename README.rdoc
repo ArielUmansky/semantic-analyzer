@@ -7,7 +7,7 @@ This service is still under development so the documentation will be updated acc
 
 This service exposes a REST API. The followings are the supported APIs so far:
 
-* POST /analyzer
+====POST /analyzer
  
 This route permits to the user of the service to cluster data that should be in de request body. Also the client can configure other data, like the algorithm used by the analyzer and the metadata of the corpus.
 
@@ -20,12 +20,12 @@ The body admits the following parameters:
     { 
         corpus: [ {document: "Here goes the text of the document. All the documents must have it", 
                    category: "optional_category_string", 
-                   keywords: ["optional", "array", "of", "keywords", "that", "are", "important", "for", "this",                                  "document"], ... ], 
+                   keywords: ["optional", "array", "of", "keywords", "that", "are", "important", "for", "this", "document"], ... ], 
         algorithm: ... // Optional. Should be one of the algorithms supported. The service uses Kmeans by default if the client doesn't specify any
         metadata: ... // Should be a hash including metadata for the algorithm used. Each algorithm specifies its own metadata
     }
 
-====KMeans
+=====KMeans
 
 Kmeans is one of the most common algorithms of machine learning. This service uses it togheter with cosine similarity and tf-idf to model the documents and cluster them.
 
