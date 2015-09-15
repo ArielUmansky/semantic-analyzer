@@ -20,10 +20,18 @@ RSpec.describe KMeans do
 
   let(:noticia1_grupo4) { "Pablo Trapero ganó el premio al mejor director en el festival de Venecia por El Clan"}
 
+  let(:noticia1_grupo5) { "Guerra en la farándula: Rial vs Canosa. La pelea de los mediáticos"}
+  let(:noticia2_grupo5) { "Ayer en el programa de los culos del espectáculo, Rial y Canosa protagonizaron una fuerte disputa que terminó siendo reproducida por todos los programas de la tarde de la televisión argentina"}
+
 
   let(:corpus_arguments) {[{document: noticia1_grupo1}, {document: noticia2_grupo1}, {document: noticia3_grupo1},
                            {document: noticia1_grupo2}, {document: noticia2_grupo2}, {document: noticia1_grupo3},
                            {document: noticia2_grupo3}]}
+
+  let(:politica) { "política" }
+  let(:deportes) { "deportes" }
+  let(:internacionales) { "internacionales" }
+  let(:espectaculos) { "espectáculos" }
 
   let(:metadata) do
     {
@@ -41,10 +49,27 @@ RSpec.describe KMeans do
 
     subject { kmeans.execute(corpus_arguments, metadata) }
 
+    #TODO: Test categories
     it "works" do
-      #pending
       result_set = kmeans.pretty_result_set(subject)
       expect(result_set).to be_a(Array)
+    end
+
+    context "when there are categories" do
+
+      let(:number_of_centroids) { 5 }
+
+      let(:corpus_arguments) {[{document: noticia1_grupo1, category: internacionales}, {document: noticia2_grupo1, category: internacionales}, {document: noticia3_grupo1, category: internacionales},
+                               {document: noticia1_grupo2, category: deportes}, {document: noticia2_grupo2, category: deportes}, {document: noticia1_grupo3, category: politica},
+                               {document: noticia2_grupo3, category: politica},
+                               {document: noticia1_grupo4, category: espectaculos},
+                               {document: noticia1_grupo5, category: espectaculos}, {document: noticia2_grupo5, category: espectaculos}]}
+
+      it "works" do
+        result_set = kmeans.pretty_result_set(subject)
+        expect(result_set).to be_a(Array)
+      end
+
     end
 
   end
@@ -67,22 +92,80 @@ RSpec.describe KMeans do
 
   describe "#find_closest_cluster_center" do
 
-    let(:document) { corpus.document_vector_list[4] }
+    context "when there is no categories" do
 
-    let(:test_centroids) {
-      [corpus.document_vector_list[1], corpus.document_vector_list[3], corpus.document_vector_list[6]]
-    }
+      let(:document) { corpus.document_vector_list[4] }
 
-    it "returns the index of the closest centroid" do
-      centroids = Array.new
+      let(:test_centroids) {
+        [corpus.document_vector_list[1], corpus.document_vector_list[3], corpus.document_vector_list[6]]
+      }
 
-      test_centroids.each do |document|
-        centroid = Cluster.new
-        centroid.add_document(document)
-        centroids << centroid
+      it "returns the index of the closest centroid" do
+        centroids = Array.new
+
+        test_centroids.each do |document|
+          centroid = Cluster.new
+          centroid.add_document(document)
+          centroids << centroid
+        end
+
+        expect(kmeans.find_closest_cluster_center(centroids, document)).to eq(1)
+
       end
 
-      expect(kmeans.find_closest_cluster_center(centroids, document)).to eq(1)
+      context "when two documents have similar tf-idf but are from different categories" do
+
+        let(:document) { corpus.document_vector_list[1] }
+
+        let(:test_centroids) {
+          [corpus.document_vector_list[0], corpus.document_vector_list[3], corpus.document_vector_list[6]]
+        }
+
+        it "returns the centroid of the most similar document which is an unsuccessful result " do
+          centroids = Array.new
+
+          test_centroids.each do |document|
+            centroid = Cluster.new
+            centroid.add_document(document)
+            centroids << centroid
+          end
+
+          expect(kmeans.find_closest_cluster_center(centroids, document)).to eq(1)
+
+        end
+
+      end
+
+    end
+
+    context "when there are categories" do
+
+      context "when two documents have similar tf-idf but are from different categories" do
+
+        let(:corpus_arguments) {[{document: noticia1_grupo1, category: internacionales}, {document: noticia2_grupo1, category: internacionales}, {document: noticia3_grupo1, category: internacionales},
+                                 {document: noticia1_grupo2, category: deportes}, {document: noticia2_grupo2, category: deportes}, {document: noticia1_grupo3, category: politica},
+                                 {document: noticia2_grupo3, category: politica} ]}
+
+        let(:document) { corpus.document_vector_list[1] }
+
+        let(:test_centroids) {
+          [corpus.document_vector_list[0], corpus.document_vector_list[3], corpus.document_vector_list[6]]
+        }
+
+        it "returns the centroid of the most similar document that belongs to the same category which is an expected result " do
+          centroids = Array.new
+
+          test_centroids.each do |document|
+            centroid = Cluster.new
+            centroid.add_document(document)
+            centroids << centroid
+          end
+
+          expect(kmeans.find_closest_cluster_center(centroids, document)).to eq(0)
+
+        end
+
+      end
 
     end
 
@@ -98,7 +181,6 @@ RSpec.describe KMeans do
 
     context "when there aren't categories" do
 
-
       it "the centroids are chosen randomly" do
         centroids = subject
         expect(centroids.count).to eq(number_of_centroids)
@@ -107,11 +189,6 @@ RSpec.describe KMeans do
     end
 
     context "when there are categories" do
-
-      let(:politica) { "política" }
-      let(:deportes) { "deportes" }
-      let(:internacionales) { "internacionales" }
-      let(:espectaculos) { "espectáculos" }
 
       let(:corpus_arguments){ [{document: noticia1_grupo1, category: internacionales}, {document: noticia2_grupo1, category: internacionales}, {document: noticia3_grupo1, category: internacionales},
                               {document: noticia1_grupo2, category: deportes}, {document: noticia2_grupo2, category: deportes},
