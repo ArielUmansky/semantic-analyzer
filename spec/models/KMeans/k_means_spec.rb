@@ -33,6 +33,21 @@ RSpec.describe KMeans do
   let(:internacionales) { "internacionales" }
   let(:espectaculos) { "espectáculos" }
 
+  let(:keywords_n1g1) { ["Alemania", "Austria", "guerra", "Siria", "inmigrantes"]}
+  let(:keywords_n2g1) { ["Argentina", "guerra", "Siria", "Anibal Fernandez", "inmigrantes"]}
+  let(:keywords_n3g1) { ["guerra", "Siria", "niño", "muerto", "fotografía", "Irán"]}
+
+  let(:keywords_n1g2) { ["Argentina", "Bolivia", "amistoso", "Lavezzi", "Aguero", "Messi", "Correa"]}
+  let(:keywords_n2g2) { ["Argentina", "Bolivia", "amistoso", "goleada"]}
+
+  let(:keywords_n1g3) { ["Resultados", "PASO", "Scioli", "Cambiemos"]}
+  let(:keywords_n2g3) { ["PASO", "presidenciales", "Macri"]}
+
+  let(:keywords_n1g4) { ["Pablo Trapero", "Festival de Venecia", "El Clan"]}
+
+  let(:keywords_n1g5) { ["Guerra", "Canosa", "Rial"]}
+  let(:keywords_n2g5) { ["Rial", "Canosa", "pelea"]}
+
   let(:metadata) do
     {
         nmb_of_centroids: number_of_centroids
@@ -49,7 +64,6 @@ RSpec.describe KMeans do
 
     subject { kmeans.execute(corpus_arguments, metadata) }
 
-    #TODO: Test categories
     it "works" do
       result_set = kmeans.pretty_result_set(subject)
       expect(result_set).to be_a(Array)
@@ -64,6 +78,23 @@ RSpec.describe KMeans do
                                {document: noticia2_grupo3, category: politica},
                                {document: noticia1_grupo4, category: espectaculos},
                                {document: noticia1_grupo5, category: espectaculos}, {document: noticia2_grupo5, category: espectaculos}]}
+
+      it "works" do
+        result_set = kmeans.pretty_result_set(subject)
+        expect(result_set).to be_a(Array)
+      end
+
+    end
+
+    context "when there are keywords" do
+
+      let(:number_of_centroids) { 4 }
+
+      let(:corpus_arguments) {[{document: noticia1_grupo1, keywords: keywords_n1g1}, {document: noticia2_grupo1, keywords: keywords_n2g1}, {document: noticia3_grupo1, keywords: keywords_n3g1},
+                               {document: noticia1_grupo2, keywords: keywords_n1g2}, {document: noticia2_grupo2, keywords: keywords_n2g2}, {document: noticia1_grupo3, keywords: keywords_n1g3},
+                               {document: noticia2_grupo3, keywords: keywords_n2g3},
+                               {document: noticia1_grupo4, keywords: keywords_n1g4},
+                               {document: noticia1_grupo5, keywords: keywords_n1g5}, {document: noticia2_grupo5, keywords: keywords_n2g5}]}
 
       it "works" do
         result_set = kmeans.pretty_result_set(subject)
