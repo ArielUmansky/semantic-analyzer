@@ -7,23 +7,32 @@ This service is still under development so the documentation will be updated acc
 
 This service exposes a REST API. The followings are the supported APIs so far:
 
-* POST /analyzer
+====POST /analyzer
  
-This route permits to the user of the service to cluster data that should be in de request body. Also the client can configure other data, like the algorithm used by the analyzer and the metadata of the corpus.
-
-The algorithm supported by the date is: kmeans. 
+This route clusters data that should be specified in the body of the request. Also the client can configure other data, like the algorithm used by the analyzer and the metadata of the corpus.
 
 The service is implemented in such a way that will be easy to add new algorithms in the future. 
 
 The body admits the following parameters:
 
     { 
-        corpus: ... // Array of string representing the corpus to be clustered. Each string should be a document
-        algorithm: ... // Optional. Should be one of the algorithms supported. The service uses Kmeans by default if the client doesn't specify any
-        metadata: ... // Should be a hash including metadata for the algorithm used. Each algorithm specifies its own metadata
+        corpus: [ {document: "Here goes the text of the document. 
+                     All the documents must have it", 
+                   category: "optional_category_string", 
+                   keywords: ["optional", "array", "of", "keywords", "that", "are", 
+                     "important", "for", "this", "document"], 
+                   ... ], 
+        algorithm: ... // Optional. Should be one of the algorithms supported. 
+             The service uses Kmeans by default if the client doesn't specify any
+        metadata: ... // Should be a hash including metadata for the algorithm used. 
+             Each algorithm specifies its own metadata
     }
+    
+The algorithms supported so far are: 
 
-KMeans:
+* kmeans
+
+=====KMeans
 
 Kmeans is one of the most common algorithms of machine learning. This service uses it togheter with cosine similarity and tf-idf to model the documents and cluster them.
 
@@ -31,10 +40,13 @@ This algorithm requires the amount of clusters before its execution. Therefore, 
 
     {
         nmb_of_centroids: ... // Should be a number specifying explicitly the number of clusters
-        cluster_size: ... // Should be a number specifying an estimate of the size of each cluster. With this data, the service can infer the number of clusters
+        cluster_size: ... // Should be a number specifying an estimate of the size of each cluster. 
+                             With this data, the service can infer the number of clusters
     }
 
 If the user doesn't specify one if this fields in the metadata, the user will receive HTTP Status 422: Unprocessable Entity. 
+
+The number of centroids cannot be greater than the amount of documents in the corpus. 
 
 
 
