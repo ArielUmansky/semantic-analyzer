@@ -5,6 +5,8 @@ class KMeans
   NUMBER_OF_CENTROIDS_EXCEPTION = "The service cannot infer the number of centroids for Kmeans algorithm. Please read the documentation and add the required metadata"
   TOO_MANY_CENTROIDS_EXCEPTION = "There amount of centroids cannot be greater than the amount of documents"
   NAME_WEIGHT_HEURISTIC = 200
+  KEYWORDS_WEIGHT_HEURISTIC = 1000
+  KEYWORDS_AMOUNT_WEIGHT_HEURISTIC = 9
   CATEGORY_WEIGHT_HEURISTIC = 1
 
   def name
@@ -146,12 +148,24 @@ class KMeans
 
     similarity = category_weight_heuristic(centroid, document, similarity)
 
+    similarity = keywords_weight_heuristic(centroid, document, similarity)
+
     similarity
   end
 
   def category_weight_heuristic(centroid, document, similarity)
     if centroid.category && document.category && centroid.category == document.category
       similarity = similarity + KMeans::CATEGORY_WEIGHT_HEURISTIC
+    end
+    similarity
+  end
+
+  def keywords_weight_heuristic(centroid, document, similarity)
+    if centroid.centroid_keywords && document.keywords
+      nmb_of_shared_keywords = (centroid.centroid_keywords & document.keywords).count
+      if nmb_of_shared_keywords > 0
+        similarity = similarity * (nmb_of_shared_keywords ** KMeans::KEYWORDS_AMOUNT_WEIGHT_HEURISTIC) * KMeans::KEYWORDS_WEIGHT_HEURISTIC
+      end
     end
     similarity
   end
