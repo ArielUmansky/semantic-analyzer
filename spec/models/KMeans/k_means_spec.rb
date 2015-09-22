@@ -123,28 +123,28 @@ RSpec.describe KMeans do
 
   describe "#find_closest_cluster_center" do
 
-    context "when there is no categories" do
+    let(:document) { corpus.document_vector_list[4] }
 
-      let(:document) { corpus.document_vector_list[4] }
+    let(:test_centroids) {
+      [corpus.document_vector_list[1], corpus.document_vector_list[3], corpus.document_vector_list[6]]
+    }
 
-      let(:test_centroids) {
-        [corpus.document_vector_list[1], corpus.document_vector_list[3], corpus.document_vector_list[6]]
-      }
+    it "returns the index of the closest centroid" do
+      centroids = Array.new
 
-      it "returns the index of the closest centroid" do
-        centroids = Array.new
-
-        test_centroids.each do |document|
-          centroid = Cluster.new
-          centroid.add_document(document)
-          centroids << centroid
-        end
-
-        expect(kmeans.find_closest_cluster_center(centroids, document)).to eq(1)
-
+      test_centroids.each do |document|
+        centroid = Cluster.new
+        centroid.add_document(document)
+        centroids << centroid
       end
 
-      context "when two documents have similar tf-idf but are from different categories" do
+      expect(kmeans.find_closest_cluster_center(centroids, document)).to eq(1)
+
+    end
+
+    context "when there is no categories nor keywords" do
+
+      context "when two documents have similar tf-idf but are from different categories or would have different keywords" do
 
         let(:document) { corpus.document_vector_list[1] }
 
@@ -195,6 +195,33 @@ RSpec.describe KMeans do
           expect(kmeans.find_closest_cluster_center(centroids, document)).to eq(0)
 
         end
+
+      end
+
+    end
+
+    context "when there are keywords" do
+
+      let(:corpus_arguments) {[{document: noticia1_grupo1, keywords: keywords_n1g1}, {document: noticia2_grupo1, keywords: keywords_n2g1}, {document: noticia3_grupo1, keywords: keywords_n3g1},
+                               {document: noticia1_grupo2, keywords: keywords_n1g2}, {document: noticia2_grupo2, keywords: keywords_n2g2}, {document: noticia1_grupo3, keywords: keywords_n1g3},
+                               {document: noticia2_grupo3, keywords: keywords_n2g3}]}
+
+      let(:document) { corpus.document_vector_list[1] }
+
+      let(:test_centroids) {
+        [corpus.document_vector_list[0], corpus.document_vector_list[3], corpus.document_vector_list[6]]
+      }
+
+      it "returns the centroid of the most similar document affected by the keywords" do
+        centroids = Array.new
+
+        test_centroids.each do |document|
+          centroid = Cluster.new
+          centroid.add_document(document)
+          centroids << centroid
+        end
+
+        expect(kmeans.find_closest_cluster_center(centroids, document)).to eq(0)
 
       end
 
