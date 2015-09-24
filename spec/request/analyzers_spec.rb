@@ -285,7 +285,7 @@ RSpec.describe "Analyzer", :type => :request do
 
       it "returns http status ok" do
         pending
-        subject
+        #subject
         expect(response).to have_http_status(:ok)
         puts (JSON.parse(response.body)["result_set"])
       end
