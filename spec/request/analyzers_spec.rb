@@ -91,7 +91,7 @@ RSpec.describe "Analyzer", :type => :request do
 
       it "returns a result_set" do
         subject
-        expect(JSON.parse(response.body)["result_set"]).to be_a(Array)
+        expect(JSON.parse(response.body)["result_set"]).to be_a(Hash)
       end
 
       it "returns the algorithm used" do
@@ -287,7 +287,6 @@ RSpec.describe "Analyzer", :type => :request do
         pending
         #subject
         expect(response).to have_http_status(:ok)
-        puts (JSON.parse(response.body)["result_set"])
       end
 
     end
