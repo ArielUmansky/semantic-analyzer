@@ -1,3 +1,5 @@
+require_all 'app/presenters/kmeans'
+
 class KMeans
 
   #TODO: I think there is an optimization available: I could add the inverse document frequency of the terms in the set  of terms since that's a metric whose value is the same regardless the document
@@ -11,6 +13,10 @@ class KMeans
 
   def name
     Analyzer::KMEANS
+  end
+
+  def presenter_class
+    ClustersPresenter
   end
 
   def execute(input_corpus, metadata)

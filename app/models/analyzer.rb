@@ -27,6 +27,11 @@ class Analyzer
     end
   end
 
+  def presenter_class
+    @algorithm.presenter_class
+
+  end
+
   def default_algorithm
     KMeans.new
   end

@@ -6,7 +6,7 @@ class AnalyzerController < ApplicationController
       check_params
       analyzer = Analyzer.new
       result_set = analyzer.perform(params[:body][:corpus], params[:body][:algorithm], params[:body][:metadata])
-      render json: { result_set: result_set, algorithm: analyzer.algorithm }
+      render json: { result_set: analyzer.presenter_class.new(result_set), algorithm: analyzer.algorithm }
     rescue ActionController::ParameterMissing, RuntimeError
       head :unprocessable_entity
     end
