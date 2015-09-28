@@ -81,7 +81,8 @@ RSpec.describe "Analyzer", :type => :request do
         }
       end
 
-      let(:corpus) { [ { document: "foo", category: "politics", keywords: ["foo"] }, { document:"bar", category: "sports", keywords: ["bar"] } ] }
+      let(:corpus) { [ { document: "foo", category: "politics", keywords: ["foo"]},
+                       { document:"bar", category: "sports", keywords: ["bar"]} ] }
       let(:algorithm) {Analyzer::KMEANS }
 
       it "returns http status ok" do
@@ -97,6 +98,23 @@ RSpec.describe "Analyzer", :type => :request do
       it "returns the algorithm used" do
         subject
         expect(JSON.parse(response.body)["algorithm"]).to eq(Analyzer::KMEANS)
+      end
+
+      context "when user_info is present" do
+
+        let(:user_info_1) { SecureRandom.uuid.to_s }
+        let(:user_info_2) { SecureRandom.uuid.to_s }
+
+        let(:corpus) { [ { document: "foo", category: "politics", keywords: ["foo"], user_info: user_info_1 },
+                         { document:"bar", category: "sports", keywords: ["bar"], user_info: user_info_2 } ] }
+
+        it "is present in the response" do
+          subject
+          result_set = JSON.parse(response.body)["result_set"]
+          expect(result_set["result"].first["grouped_documents"].first["user_info"]).to eq user_info_1
+          expect(result_set["result"].second["grouped_documents"].first["user_info"]).to eq user_info_2
+        end
+
       end
 
       context "when algorithm is not present" do
@@ -268,7 +286,6 @@ RSpec.describe "Analyzer", :type => :request do
         ]
       end
 
-
       let(:req_params) do
         {
             body: {
@@ -281,7 +298,6 @@ RSpec.describe "Analyzer", :type => :request do
       end
 
       let(:nmb_of_centroids) { 10 }
-
 
       it "returns http status ok" do
         pending
