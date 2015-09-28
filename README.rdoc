@@ -15,20 +15,36 @@ The service is implemented in such a way that will be easy to add new algorithms
 
 The body admits the following parameters:
 
-    {   algorithm: ... // Optional. Should be one of the algorithms supported. 
-             The service uses Kmeans by default if the client doesn't specify any
-        
-        metadata: ... // Should be a hash including metadata for the algorithm used. 
-             Each algorithm specifies its own metadata
-        
-        corpus: [ {document: "Here goes the text of the document. 
-                     All the documents must have it", 
-                   category: "optional_category_string", 
-                   keywords: ["optional", "array", "of", "keywords", "that", "are", 
-                     "important", "for", "this", "document"]}, 
-                   ... ]
+    {   
+     algorithm: ... *// Optional. Should be one of the algorithms supported.* 
+               *The service uses Kmeans by default if the client doesn't specify any*
+     metadata: ... *// Should be a hash including metadata for the algorithm used. *
+             *Each algorithm specifies its own metadata*
+     corpus: [ {
+                document: "Here goes the text of the document. 
+                      All the documents must have it", 
+                category: "optional_category_string", 
+                keywords: ["optional", "array", "of", "keywords", "that", "are", 
+                      "important", "for", "this", "document"],
+                user_info: ... *// This will be by-passed and be returned in the response. *
+                          *We recomend to use it to refer each document later*
+                }, 
+              ... ],
 
     }
+    
+This is the structure of the body in the response:
+
+    {   
+     result: [
+              grouped_documents: [
+                                  document: "document clustered",
+                                  user_info: ... *// The same info that was loaded by*
+                                        *the user in the request*
+                                 ]
+             ]
+    }
+
     
 The algorithms supported so far are: 
 
@@ -41,9 +57,9 @@ Kmeans is one of the most common algorithms of machine learning. This service us
 This algorithm requires the amount of clusters before its execution. Therefore, the client must specify that in one of the following params in the metadata of the body:
 
     {
-        nmb_of_centroids: ... // Should be a number specifying explicitly the number of clusters
-        cluster_size: ... // Should be a number specifying an estimate of the size of each cluster. 
-                             With this data, the service can infer the number of clusters
+        nmb_of_centroids: ... *// Should be a number specifying explicitly the number of clusters*
+        cluster_size: ... *// Should be a number specifying an estimate of the size of each cluster. *
+                             *With this data, the service can infer the number of clusters*
     }
 
 If the user doesn't specify one if this fields in the metadata, the user will receive HTTP Status 422: Unprocessable Entity. 
