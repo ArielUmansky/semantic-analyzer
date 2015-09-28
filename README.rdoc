@@ -45,11 +45,21 @@ This is the structure of the body in the response:
 
     {   
      result: [
-              grouped_documents: [
-                                  document: "document clustered",
-                                  user_info: ... // The same info that was loaded by
-                                                the user in the request
+              {
+               grouped_documents: [
+                                   {
+                                     document: "document clustered",
+                                     user_info: ... // The same info that was loaded by
+                                                 the user in the request
+                                    },
+                                   
+                                   ...
+                                   
                                  ]
+               },
+               
+               ...
+               
              ]
     }
 
