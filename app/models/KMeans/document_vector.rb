@@ -4,10 +4,15 @@ class DocumentVector
     @content = validate_content(document_hash)
     @category = validate_category(document_hash[:category]) if document_hash[:category]
     @keywords = validate_keywords(document_hash[:keywords]) if document_hash[:keywords]
+    @user_info = document_hash[:user_info]
   end
 
   def vector_space=(vector_space)
     @vector_space = vector_space
+  end
+
+  def user_info
+    @user_info
   end
 
   def vector_space

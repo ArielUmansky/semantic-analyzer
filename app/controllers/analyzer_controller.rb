@@ -18,7 +18,7 @@ class AnalyzerController < ApplicationController
      params.require(:body).require(:corpus).each do |document_input|
        if document_input.respond_to?(:require)
          document_input.require(:document)
-         document_input.permit(:category, :keywords)
+         document_input.permit(:category, :keywords, :user_info)
        else
          raise ActionController::ParameterMissing.new("")
        end

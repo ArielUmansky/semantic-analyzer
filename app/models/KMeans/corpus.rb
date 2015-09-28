@@ -105,6 +105,7 @@ class Corpus
         new_hash[:document] = new_hash[:document].split.reject { |term| SPANISH_TRIVIAL_WORDS.include?(term) || SPANISH_PREPOSITIONS.include?(term) }.join(" ")
         new_hash[:category] = document_hash[:category]
         new_hash[:keywords] = document_hash[:keywords]
+        new_hash[:user_info] = document_hash[:user_info]
         new_array << new_hash
       end
       new_array
