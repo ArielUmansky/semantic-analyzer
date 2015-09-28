@@ -18,19 +18,27 @@ The body admits the following parameters:
     {   
      algorithm: ... // Optional. Should be one of the algorithms supported.
                The service uses Kmeans by default if the client doesn't specify any
+               
      metadata: ... // Should be a hash including metadata for the algorithm used. 
              Each algorithm specifies its own metadata
-     corpus: [ {
+             
+     corpus: [ 
+              {
                 document: "Here goes the text of the document. 
                       All the documents must have it", 
+                      
                 category: "optional_category_string", 
+                
                 keywords: ["optional", "array", "of", "keywords", "that", "are", 
                       "important", "for", "this", "document"],
-                user_info: ... // This will be by-passed and be returned in the response. 
-                               We recomend to use it to refer each document later*+
-                }, 
-              ... ],
-
+                      
+                user_info: ... // Optional. This will be by-passed and be returned in the response. 
+                                   We recomend to use it to identify each document later
+               }, 
+              
+              ... 
+              
+              ]
     }
     
 This is the structure of the body in the response:
