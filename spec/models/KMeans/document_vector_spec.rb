@@ -27,7 +27,7 @@ RSpec.describe DocumentVector do
 
         let(:document_hash) { nil }
 
-        it_behave_like :fails_correctly
+        it_behaves_like :fails_correctly
 
       end
 
@@ -35,7 +35,7 @@ RSpec.describe DocumentVector do
 
         let(:document_hash) { ["some_foo_param"] }
 
-        it_behave_like :fails_correctly
+        it_behaves_like :fails_correctly
 
       end
 
@@ -68,7 +68,7 @@ RSpec.describe DocumentVector do
 
       context "when category isn't a string" do
         let(:category) { 123 }
-        it_behave_like :fails_correctly
+        it_behaves_like :fails_correctly
       end
 
       context "when category is a string" do
@@ -90,12 +90,12 @@ RSpec.describe DocumentVector do
       end
       context "when keywords are not an array" do
         let(:keywords) { 123 }
-        it_behave_like :fails_correctly
+        it_behaves_like :fails_correctly
       end
 
       context "when keywords are not an array of strings" do
         let(:keywords) { [123, "foo"] }
-        it_behave_like :fails_correctly
+        it_behaves_like :fails_correctly
       end
 
       context "when keywords are an array of strings" do
@@ -125,12 +125,12 @@ RSpec.describe DocumentVector do
 
       context "when term is nil" do
         let(:term) { nil }
-        it_behave_like :fails_correctly
+        it_behaves_like :fails_correctly
       end
 
       context "when term is not a string" do
         let(:term) { 123 }
-        it_behave_like :fails_correctly
+        it_behaves_like :fails_correctly
       end
 
     end
@@ -175,12 +175,12 @@ RSpec.describe DocumentVector do
 
       context "when term is nil" do
         let(:term) { nil }
-        it_behave_like :fails_correctly
+        it_behaves_like :fails_correctly
       end
 
       context "when term is not a string" do
         let(:term) { 123 }
-        it_behave_like :fails_correctly
+        it_behaves_like :fails_correctly
       end
 
     end
