@@ -108,11 +108,18 @@ RSpec.describe "Analyzer", :type => :request do
         let(:corpus) { [ { document: "foo", category: "politics", keywords: ["foo"], user_info: user_info_1 },
                          { document:"bar", category: "sports", keywords: ["bar"], user_info: user_info_2 } ] }
 
+        def cluster_where_is(document)
+          result_set = JSON.parse(response.body)["result_set"]
+          result_set["result"].find { |gd| gd["grouped_documents"].any? { |d| d["document"] == document}}
+        end
+
+        let(:cluster_where_is_foo) { cluster_where_is("foo") }
+        let(:cluster_where_is_bar) { cluster_where_is("bar") }
+
         it "is present in the response" do
           subject
-          result_set = JSON.parse(response.body)["result_set"]
-          expect(result_set["result"].first["grouped_documents"].first["user_info"]).to eq user_info_1
-          expect(result_set["result"].second["grouped_documents"].first["user_info"]).to eq user_info_2
+          expect(cluster_where_is_foo["grouped_documents"].first["user_info"]).to eq user_info_1
+          expect(cluster_where_is_bar["grouped_documents"].first["user_info"]).to eq user_info_2
         end
 
       end
