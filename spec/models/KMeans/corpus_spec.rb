@@ -23,17 +23,17 @@ RSpec.describe Corpus do
       let(:corpus_arguments) { nil }
 
       context "when input data is empty" do
-        it_behaves_like :fails_correctly
+        include_examples :fails_correctly
       end
 
       context "when input data isn't an array" do
         let(:corpus_arguments) { "some_foo_param" }
-        it_behaves_like :fails_correctly
+        include_examples :fails_correctly
       end
 
       context "when input data isn't an array of hashes" do
         let(:corpus_arguments) { [1, 2, 3] }
-        it_behaves_like :fails_correctly
+        include_examples :fails_correctly
       end
 
     end

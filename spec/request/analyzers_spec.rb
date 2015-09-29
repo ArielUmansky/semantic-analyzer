@@ -25,7 +25,7 @@ RSpec.describe "Analyzer", :type => :request do
       context "when the body is empty" do
         let(:req_params) { nil }
 
-        it_behaves_like :returns_unprocessable_entity
+        include_examples :returns_unprocessable_entity
 
       end
 
@@ -36,7 +36,7 @@ RSpec.describe "Analyzer", :type => :request do
           }
         end
 
-        it_behaves_like :returns_unprocessable_entity
+        include_examples :returns_unprocessable_entity
 
       end
 
@@ -49,7 +49,7 @@ RSpec.describe "Analyzer", :type => :request do
           }
         end
 
-        it_behaves_like :returns_unprocessable_entity
+        include_examples :returns_unprocessable_entity
 
       end
 
@@ -63,7 +63,7 @@ RSpec.describe "Analyzer", :type => :request do
             }
           end
 
-          it_behaves_like :returns_unprocessable_entity
+          include_examples :returns_unprocessable_entity
 
         end
 
@@ -88,7 +88,7 @@ RSpec.describe "Analyzer", :type => :request do
                        { document:"bar", category: "sports", keywords: ["bar"]} ] }
       let(:algorithm) {Analyzer::KMEANS }
 
-      it_behaves_like :returns_status_ok
+      include_examples :returns_status_ok
 
       it "returns a result_set" do
         subject
@@ -127,7 +127,7 @@ RSpec.describe "Analyzer", :type => :request do
       context "when algorithm is not present" do
         let(:algorithm) { nil }
 
-        it_behaves_like :returns_status_ok
+        include_examples :returns_status_ok
 
         it "assumes kmeans" do
           subject
@@ -303,7 +303,7 @@ RSpec.describe "Analyzer", :type => :request do
 
       let(:nmb_of_centroids) { 10 }
 
-      it_behaves_like :returns_status_ok do
+      include_examples :returns_status_ok do
         before {skip}
       end
 

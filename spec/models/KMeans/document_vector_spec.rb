@@ -14,6 +14,18 @@ RSpec.describe DocumentVector do
     end
   end
 
+  shared_examples :returns_true do
+    it "returns true" do
+      expect(subject).to be(true)
+    end
+  end
+
+  shared_examples :returns_false do
+    it "returns false" do
+      expect(subject).to be(false)
+    end
+  end
+
   describe "#initialize" do
 
     subject { DocumentVector.new(document_hash) }
@@ -24,19 +36,13 @@ RSpec.describe DocumentVector do
 
 
       context "when input data is empty" do
-
         let(:document_hash) { nil }
-
-        it_behaves_like :fails_correctly
-
+        include_examples :fails_correctly
       end
 
       context "when input data isn't a hash" do
-
         let(:document_hash) { ["some_foo_param"] }
-
-        it_behaves_like :fails_correctly
-
+        include_examples :fails_correctly
       end
 
     end
@@ -68,7 +74,7 @@ RSpec.describe DocumentVector do
 
       context "when category isn't a string" do
         let(:category) { 123 }
-        it_behaves_like :fails_correctly
+        include_examples :fails_correctly
       end
 
       context "when category is a string" do
@@ -90,12 +96,12 @@ RSpec.describe DocumentVector do
       end
       context "when keywords are not an array" do
         let(:keywords) { 123 }
-        it_behaves_like :fails_correctly
+        include_examples :fails_correctly
       end
 
       context "when keywords are not an array of strings" do
         let(:keywords) { [123, "foo"] }
-        it_behaves_like :fails_correctly
+        include_examples :fails_correctly
       end
 
       context "when keywords are an array of strings" do
@@ -125,12 +131,12 @@ RSpec.describe DocumentVector do
 
       context "when term is nil" do
         let(:term) { nil }
-        it_behaves_like :fails_correctly
+        include_examples :fails_correctly
       end
 
       context "when term is not a string" do
         let(:term) { 123 }
-        it_behaves_like :fails_correctly
+        include_examples :fails_correctly
       end
 
     end
@@ -145,18 +151,6 @@ RSpec.describe DocumentVector do
 
     end
 
-  end
-
-  shared_examples :returns_true do
-    it "returns true" do
-      expect(subject).to be(true)
-    end
-  end
-
-  shared_examples :returns_false do
-    it "returns false" do
-      expect(subject).to be(false)
-    end
   end
 
   describe "#contains_term?" do
@@ -175,12 +169,12 @@ RSpec.describe DocumentVector do
 
       context "when term is nil" do
         let(:term) { nil }
-        it_behaves_like :fails_correctly
+        include_examples :fails_correctly
       end
 
       context "when term is not a string" do
         let(:term) { 123 }
-        it_behaves_like :fails_correctly
+        include_examples :fails_correctly
       end
 
     end
@@ -189,12 +183,12 @@ RSpec.describe DocumentVector do
 
       context "when the term exists" do
         let(:term) { "Boca" }
-        it_behaves_like :returns_true
+        include_examples :returns_true
       end
 
       context "when the term doesn't exists" do
         let(:term) { "Foo" }
-        it_behaves_like :returns_false
+        include_examples :returns_false
       end
 
     end
@@ -212,12 +206,12 @@ RSpec.describe DocumentVector do
 
     context "when vector spaces are different" do
       let(:corpus_arguments) { [{document: noticia}, {document: noticia2}] }
-      it_behaves_like :returns_false
+      include_examples :returns_false
     end
 
     context "when vector spaces are the same" do
       let(:corpus_arguments) { [{document: noticia}, {document: noticia}] }
-      it_behaves_like :returns_true
+      include_examples :returns_true
     end
   end
 

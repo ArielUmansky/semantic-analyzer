@@ -71,7 +71,7 @@ RSpec.describe KMeans do
 
     subject { kmeans.execute(corpus_arguments, metadata) }
 
-    it_behaves_like :works
+    include_examples :works
 
     context "when there are categories" do
 
@@ -83,7 +83,7 @@ RSpec.describe KMeans do
                                {document: noticia1_grupo4, category: espectaculos},
                                {document: noticia1_grupo5, category: espectaculos}, {document: noticia2_grupo5, category: espectaculos}]}
 
-      it_behaves_like :works
+      include_examples :works
 
     end
 
@@ -97,7 +97,7 @@ RSpec.describe KMeans do
                                {document: noticia1_grupo4, keywords: keywords_n1g4},
                                {document: noticia1_grupo5, keywords: keywords_n1g5}, {document: noticia2_grupo5, keywords: keywords_n2g5}]}
 
-      it_behaves_like :works
+      include_examples :works
 
     end
 
@@ -273,9 +273,9 @@ RSpec.describe KMeans do
 
         let(:categories) { [politica, deportes, internacionales, espectaculos]}
 
-        it_behaves_like :generates_an_array_whose_size_is_equals_to_the_number_of_centroids
+        include_examples :generates_an_array_whose_size_is_equals_to_the_number_of_centroids
 
-        it_behaves_like :each_centroid_has_a_different_category
+        include_examples :each_centroid_has_a_different_category
 
       end
 
@@ -286,9 +286,9 @@ RSpec.describe KMeans do
         let(:corpus_arguments){ [{document: noticia1_grupo1, category: internacionales}, {document: noticia2_grupo1, category: internacionales}, {document: noticia3_grupo1, category: internacionales},
                                  {document: noticia1_grupo2, category: deportes}, {document: noticia2_grupo2, category: deportes}]}
 
-        it_behaves_like :generates_an_array_whose_size_is_equals_to_the_number_of_centroids
+        include_examples :generates_an_array_whose_size_is_equals_to_the_number_of_centroids
 
-        it_behaves_like :each_centroid_has_a_different_category
+        include_examples :each_centroid_has_a_different_category
 
       end
 

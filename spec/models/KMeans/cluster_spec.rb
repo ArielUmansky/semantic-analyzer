@@ -32,7 +32,7 @@ RSpec.describe Cluster do
 
     subject { cluster.array_of_vector_spaces_by_position }
 
-    it_behaves_like :generates_a_correct_sized_array
+    include_examples :generates_a_correct_sized_array
 
     it "each position should be an array of two elements" do
       subject.each do |array|
@@ -57,7 +57,7 @@ RSpec.describe Cluster do
     let(:avg_first_position) { 0.0 }
     let(:avg_second_position) { 0.049510512897138946 }
 
-    it_behaves_like :generates_a_correct_sized_array
+    include_examples :generates_a_correct_sized_array
 
     it "each position should be a tf-idf value" do
       subject.each do |value|
