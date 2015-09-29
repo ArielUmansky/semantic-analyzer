@@ -71,7 +71,7 @@ RSpec.describe KMeans do
 
     subject { kmeans.execute(corpus_arguments, metadata) }
 
-    it_should_behave_like :works
+    it_behave_like :works
 
     context "when there are categories" do
 
@@ -83,7 +83,7 @@ RSpec.describe KMeans do
                                {document: noticia1_grupo4, category: espectaculos},
                                {document: noticia1_grupo5, category: espectaculos}, {document: noticia2_grupo5, category: espectaculos}]}
 
-      it_should_behave_like :works
+      it_behave_like :works
 
     end
 
@@ -97,7 +97,7 @@ RSpec.describe KMeans do
                                {document: noticia1_grupo4, keywords: keywords_n1g4},
                                {document: noticia1_grupo5, keywords: keywords_n1g5}, {document: noticia2_grupo5, keywords: keywords_n2g5}]}
 
-      it_should_behave_like :works
+      it_behave_like :works
 
     end
 
