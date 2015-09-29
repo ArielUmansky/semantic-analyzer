@@ -8,6 +8,12 @@ RSpec.describe DocumentVector do
   let(:noticia) {  "Boca venció a River por 5 a 0 en el clásico de verano"}
   let(:noticia2) { "Tras la goleada, los afiches de Boca gastando a las gallinas, empapelaron la ciudad"}
 
+  shared_examples :fails_correctly do
+    it "fails correctly" do
+      expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION)
+    end
+  end
+
   describe "#initialize" do
 
     subject { DocumentVector.new(document_hash) }
@@ -21,9 +27,7 @@ RSpec.describe DocumentVector do
 
         let(:document_hash) { nil }
 
-        it "fails correctly" do
-          expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION)
-        end
+        it_should_behave_like :fails_correctly
 
       end
 
@@ -31,9 +35,7 @@ RSpec.describe DocumentVector do
 
         let(:document_hash) { ["some_foo_param"] }
 
-        it "fails correctly" do
-          expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION)
-        end
+        it_should_behave_like :fails_correctly
 
       end
 
@@ -66,9 +68,7 @@ RSpec.describe DocumentVector do
 
       context "when category isn't a string" do
         let(:category) { 123 }
-        it "fails correctly" do
-          expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION)
-        end
+        it_should_behave_like :fails_correctly
       end
 
       context "when category is a string" do
@@ -90,22 +90,18 @@ RSpec.describe DocumentVector do
       end
       context "when keywords are not an array" do
         let(:keywords) { 123 }
-        it "fails correctly" do
-          expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION)
-        end
+        it_should_behave_like :fails_correctly
       end
 
       context "when keywords are not an array of strings" do
         let(:keywords) { [123, "foo"] }
-        it "fails correctly" do
-          expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION)
-        end
+        it_should_behave_like :fails_correctly
       end
 
       context "when keywords are an array of strings" do
         let(:keywords) { ["a_string", "another_string"] }
         let(:document_vector) { subject }
-        it "sets the category" do
+        it "sets the keywords" do
           expect(document_vector.keywords).to eq(keywords)
         end
       end
@@ -128,23 +124,13 @@ RSpec.describe DocumentVector do
     context "when input data is incorrect" do
 
       context "when term is nil" do
-
         let(:term) { nil }
-
-        it "fails correctly" do
-          expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION)
-        end
-
+        it_should_behave_like :fails_correctly
       end
 
       context "when term is not a string" do
-
         let(:term) { 123 }
-
-        it "fails correctly" do
-          expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION)
-        end
-
+        it_should_behave_like :fails_correctly
       end
 
     end
@@ -159,6 +145,18 @@ RSpec.describe DocumentVector do
 
     end
 
+  end
+
+  shared_examples :returns_true do
+    it "returns true" do
+      expect(subject).to be(true)
+    end
+  end
+
+  shared_examples :returns_false do
+    it "returns false" do
+      expect(subject).to be(false)
+    end
   end
 
   describe "#contains_term?" do
@@ -176,23 +174,13 @@ RSpec.describe DocumentVector do
     context "when input data is incorrect" do
 
       context "when term is nil" do
-
         let(:term) { nil }
-
-        it "fails correctly" do
-          expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION)
-        end
-
+        it_should_behave_like :fails_correctly
       end
 
       context "when term is not a string" do
-
         let(:term) { 123 }
-
-        it "fails correctly" do
-          expect { subject }.to raise_error(Analyzer::WRONG_INPUT_EXCEPTION)
-        end
-
+        it_should_behave_like :fails_correctly
       end
 
     end
@@ -200,23 +188,13 @@ RSpec.describe DocumentVector do
     context "when input data is correct" do
 
       context "when the term exists" do
-
         let(:term) { "Boca" }
-
-        it "returns true" do
-          expect(subject).to be(true)
-        end
-
+        it_behaves_like :returns_true
       end
 
       context "when the term doesn't exists" do
-
         let(:term) { "Foo" }
-
-        it "returns false" do
-          expect(subject).to be(false)
-        end
-
+        it_behaves_like :returns_false
       end
 
     end
@@ -233,23 +211,13 @@ RSpec.describe DocumentVector do
     subject { document_vector1.same_vector_space?(document_vector2) }
 
     context "when vector spaces are different" do
-
       let(:corpus_arguments) { [{document: noticia}, {document: noticia2}] }
-
-      it "returns false" do
-        expect( subject ).to be false
-      end
-
+      it_behaves_like :returns_false
     end
 
     context "when vector spaces are the same" do
-
       let(:corpus_arguments) { [{document: noticia}, {document: noticia}] }
-
-      it "returns true" do
-        expect( subject ).to be true
-      end
-
+      it_behaves_like :returns_true
     end
   end
 

@@ -2,6 +2,20 @@ require "rails_helper"
 
 RSpec.describe "Analyzer", :type => :request do
 
+  shared_examples :returns_unprocessable_entity do
+    it "returns unprocessable entity" do
+      subject
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
+
+  shared_examples :returns_status_ok do
+    it "returns unprocessable entity" do
+      subject
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "POST /analyzer" do
 
     subject { post("/analyzer", req_params, nil) }
@@ -11,10 +25,7 @@ RSpec.describe "Analyzer", :type => :request do
       context "when the body is empty" do
         let(:req_params) { nil }
 
-        it "returns bad request" do
-          subject
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
+        it_behaves_like :returns_unprocessable_entity
 
       end
 
@@ -25,10 +36,7 @@ RSpec.describe "Analyzer", :type => :request do
           }
         end
 
-        it "returns bad request" do
-          subject
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
+        it_behaves_like :returns_unprocessable_entity
 
       end
 
@@ -41,10 +49,7 @@ RSpec.describe "Analyzer", :type => :request do
           }
         end
 
-        it "returns bad request" do
-          subject
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
+        it_behaves_like :returns_unprocessable_entity
 
       end
 
@@ -58,10 +63,8 @@ RSpec.describe "Analyzer", :type => :request do
             }
           end
 
-          it "returns bad request" do
-            subject
-            expect(response).to have_http_status(:unprocessable_entity)
-          end
+          it_behaves_like :returns_unprocessable_entity
+
         end
 
       end
@@ -85,10 +88,7 @@ RSpec.describe "Analyzer", :type => :request do
                        { document:"bar", category: "sports", keywords: ["bar"]} ] }
       let(:algorithm) {Analyzer::KMEANS }
 
-      it "returns http status ok" do
-        subject
-        expect(response).to have_http_status(:ok)
-      end
+      it_behaves_like :returns_status_ok
 
       it "returns a result_set" do
         subject
@@ -120,10 +120,7 @@ RSpec.describe "Analyzer", :type => :request do
       context "when algorithm is not present" do
         let(:algorithm) { nil }
 
-        it "returns http status ok" do
-          subject
-          expect(response).to have_http_status(:ok)
-        end
+        it_behaves_like :returns_status_ok
 
         it "assumes kmeans" do
           subject
@@ -299,10 +296,8 @@ RSpec.describe "Analyzer", :type => :request do
 
       let(:nmb_of_centroids) { 10 }
 
-      it "returns http status ok" do
-        pending
-        #subject
-        expect(response).to have_http_status(:ok)
+      it_behaves_like :returns_status_ok do
+        before {skip}
       end
 
     end

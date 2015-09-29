@@ -60,14 +60,18 @@ RSpec.describe KMeans do
 
   let(:corpus) { Corpus.new(corpus_arguments) }
 
-  describe "#execute" do
-
-    subject { kmeans.execute(corpus_arguments, metadata) }
-
+  shared_examples :works do
     it "works" do
       result_set = kmeans.pretty_result_set(subject)
       expect(result_set).to be_a(Array)
     end
+  end
+
+  describe "#execute" do
+
+    subject { kmeans.execute(corpus_arguments, metadata) }
+
+    it_should_behave_like :works
 
     context "when there are categories" do
 
@@ -79,16 +83,13 @@ RSpec.describe KMeans do
                                {document: noticia1_grupo4, category: espectaculos},
                                {document: noticia1_grupo5, category: espectaculos}, {document: noticia2_grupo5, category: espectaculos}]}
 
-      it "works" do
-        result_set = kmeans.pretty_result_set(subject)
-        expect(result_set).to be_a(Array)
-      end
+      it_should_behave_like :works
 
     end
 
     context "when there are keywords" do
 
-      let(:number_of_centroids) { 4 }
+      let(:number_of_centroids) { 5 }
 
       let(:corpus_arguments) {[{document: noticia1_grupo1, keywords: keywords_n1g1}, {document: noticia2_grupo1, keywords: keywords_n2g1}, {document: noticia3_grupo1, keywords: keywords_n3g1},
                                {document: noticia1_grupo2, keywords: keywords_n1g2}, {document: noticia2_grupo2, keywords: keywords_n2g2}, {document: noticia1_grupo3, keywords: keywords_n1g3},
@@ -96,10 +97,7 @@ RSpec.describe KMeans do
                                {document: noticia1_grupo4, keywords: keywords_n1g4},
                                {document: noticia1_grupo5, keywords: keywords_n1g5}, {document: noticia2_grupo5, keywords: keywords_n2g5}]}
 
-      it "works" do
-        result_set = kmeans.pretty_result_set(subject)
-        expect(result_set).to be_a(Array)
-      end
+      it_should_behave_like :works
 
     end
 
@@ -257,19 +255,27 @@ RSpec.describe KMeans do
         kmeans.instance_variable_set(:@set_of_categories, categories)
       }
 
-      context "when there is the same amount of centroids than categories" do
-
-        let(:categories) { [politica, deportes, internacionales, espectaculos]}
-
+      shared_examples :generates_an_array_whose_size_is_equals_to_the_number_of_centroids do
         it "generates an array whose size is equals to the number of centroids" do
           centroids = subject
           expect(centroids.count).to eq(number_of_centroids)
         end
+      end
 
-        it "each centroid has a different category" do
+      shared_examples :each_centroid_has_a_different_category do
+        it "generates an array whose size is equals to the number of centroids" do
           centroids = subject
-          expect(Set.new(centroids.map { |centroid| centroid.category }).count).to eq(number_of_centroids)
+          expect(centroids.count).to eq(number_of_centroids)
         end
+      end
+
+      context "when there is the same amount of centroids than categories" do
+
+        let(:categories) { [politica, deportes, internacionales, espectaculos]}
+
+        it_behaves_like :generates_an_array_whose_size_is_equals_to_the_number_of_centroids
+
+        it_behaves_like :each_centroid_has_a_different_category
 
       end
 
@@ -280,15 +286,9 @@ RSpec.describe KMeans do
         let(:corpus_arguments){ [{document: noticia1_grupo1, category: internacionales}, {document: noticia2_grupo1, category: internacionales}, {document: noticia3_grupo1, category: internacionales},
                                  {document: noticia1_grupo2, category: deportes}, {document: noticia2_grupo2, category: deportes}]}
 
-        it "generates an array whose size is equals to the number of centroids" do
-          centroids = subject
-          expect(centroids.count).to eq(number_of_centroids)
-        end
+        it_behaves_like :generates_an_array_whose_size_is_equals_to_the_number_of_centroids
 
-        it "each centroid has a different category" do
-          centroids = subject
-          expect(Set.new(centroids.map { |centroid| centroid.category }).count).to eq(categories.count)
-        end
+        it_behaves_like :each_centroid_has_a_different_category
 
       end
 
@@ -310,7 +310,6 @@ RSpec.describe KMeans do
       end
 
     end
-
 
   end
 
