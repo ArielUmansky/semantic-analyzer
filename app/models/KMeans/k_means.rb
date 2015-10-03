@@ -6,6 +6,7 @@ class KMeans
 
   NUMBER_OF_CENTROIDS_EXCEPTION = "The service cannot infer the number of centroids for Kmeans algorithm. Please read the documentation and add the required metadata"
   TOO_MANY_CENTROIDS_EXCEPTION = "There amount of centroids cannot be greater than the amount of documents"
+  REPEATED_DOCUMENTS_EXCEPTION = "There were repeated documents in the request"
   NAME_WEIGHT_HEURISTIC = 200
   KEYWORDS_WEIGHT_HEURISTIC = 1000
   KEYWORDS_AMOUNT_WEIGHT_HEURISTIC = 9
@@ -20,6 +21,8 @@ class KMeans
   end
 
   def execute(input_corpus, metadata)
+
+    validate_input(input_corpus, metadata)
 
     set_number_of_centroids(input_corpus, metadata) #TODO: tests for this
 
@@ -199,7 +202,6 @@ class KMeans
   end
 
   def set_number_of_centroids(input_corpus, metadata)
-    validate_metadata(metadata)
     @number_of_centroids = metadata[:nmb_of_centroids].to_i if metadata.key?(:nmb_of_centroids)
     @number_of_centroids = input_corpus.count / metadata[:cluster_size].to_i if @number_of_centroids.nil?
 
@@ -207,6 +209,17 @@ class KMeans
       raise KMeans::TOO_MANY_CENTROIDS_EXCEPTION
     end
 
+  end
+
+  def validate_input(input_corpus, metadata)
+    validate_absence_of_repeated_documents(input_corpus)
+    validate_metadata(metadata)
+  end
+
+  def validate_absence_of_repeated_documents(input_corpus)
+    if input_corpus.count != Set.new(input_corpus.map{ |document_hash| document_hash[:document]}).count
+      raise KMeans::REPEATED_DOCUMENTS_EXCEPTION
+    end
   end
 
   def validate_metadata(metadata)
