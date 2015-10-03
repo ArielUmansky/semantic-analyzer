@@ -73,7 +73,6 @@ RSpec.describe "Analyzer", :type => :request do
         let(:req_params) do
           {
               corpus: corpus,
-              algorithm: algorithm,
               metadata: {
                   nmb_of_centroids: 2
               }
@@ -83,16 +82,28 @@ RSpec.describe "Analyzer", :type => :request do
         let(:corpus) { [ { document: "foo", category: "politics", keywords: ["foo"]},
                          { document:"foo", category: "sports", keywords: ["bar"]} ] }
 
-        let(:algorithm) {Analyzer::KMEANS }
+        include_examples :returns_unprocessable_entity
+
+      end
+
+      context "when there is only one document in the request" do
+
+        let(:req_params) do
+          {
+              corpus: corpus,
+              metadata: {
+                  nmb_of_centroids: 2
+              }
+          }
+        end
+
+        let(:corpus) { [ {document: "foo", category: "politics", keywords: ["foo"]} ] }
 
         include_examples :returns_unprocessable_entity
 
       end
 
     end
-
-    #FIXME: When there are two equal documents the system fails
-    #FIXME: When there is only one document in the corpus
 
     context "when request is correct" do
       let(:req_params) do
