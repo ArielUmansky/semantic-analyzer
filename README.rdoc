@@ -90,7 +90,7 @@ This algorithm requires the amount of clusters before its execution. Therefore, 
                              With this data, the service can infer the number of clusters
     }
 
-* Kmeans Validations*
+======Kmeans Validations
 * If the user doesn't specify one if this fields in the metadata, the user will receive HTTP Status 422: Unprocessable Entity. 
 
 
