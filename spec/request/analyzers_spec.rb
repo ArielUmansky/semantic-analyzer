@@ -2,10 +2,15 @@ require "rails_helper"
 
 RSpec.describe "Analyzer", :type => :request do
 
-  shared_examples :returns_unprocessable_entity do
+  shared_examples :fails_correctly do
     it "returns unprocessable entity" do
       subject
       expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    it "returns a declarative error message" do
+      subject
+      expect(JSON.parse(response.body)["error"]).to eq error_message
     end
   end
 
@@ -24,8 +29,10 @@ RSpec.describe "Analyzer", :type => :request do
 
       context "when the body is empty" do
         let(:req_params) { nil }
+        let(:error_message){ "param is missing or the value is empty: corpus" }
 
-        include_examples :returns_unprocessable_entity
+
+        include_examples :fails_correctly
 
       end
 
@@ -35,8 +42,9 @@ RSpec.describe "Analyzer", :type => :request do
               body: { foo: "foo" }
           }
         end
+        let(:error_message){ "param is missing or the value is empty: corpus" }
 
-        include_examples :returns_unprocessable_entity
+        include_examples :fails_correctly
 
       end
 
@@ -48,8 +56,9 @@ RSpec.describe "Analyzer", :type => :request do
                       algorithm: "foo" }
           }
         end
+        let(:error_message){ "param is missing or the value is empty: corpus" }
 
-        include_examples :returns_unprocessable_entity
+        include_examples :fails_correctly
 
       end
 
@@ -62,8 +71,9 @@ RSpec.describe "Analyzer", :type => :request do
                         algorithm: Analyzer::KMEANS }
             }
           end
+          let(:error_message){ "param is missing or the value is empty: corpus" }
 
-          include_examples :returns_unprocessable_entity
+          include_examples :fails_correctly
 
         end
 
@@ -82,7 +92,9 @@ RSpec.describe "Analyzer", :type => :request do
         let(:corpus) { [ { document: "foo", category: "politics", keywords: ["foo"]},
                          { document:"foo", category: "sports", keywords: ["bar"]} ] }
 
-        include_examples :returns_unprocessable_entity
+        let(:error_message){ KMeans::REPEATED_DOCUMENTS_EXCEPTION }
+
+        include_examples :fails_correctly
 
       end
 
@@ -99,7 +111,9 @@ RSpec.describe "Analyzer", :type => :request do
 
         let(:corpus) { [ {document: "foo", category: "politics", keywords: ["foo"]} ] }
 
-        include_examples :returns_unprocessable_entity
+        let(:error_message){ KMeans::MISSING_DOCUMENTS_EXCEPTION }
+
+        include_examples :fails_correctly
 
       end
 
@@ -324,12 +338,10 @@ RSpec.describe "Analyzer", :type => :request do
 
       let(:req_params) do
         {
-            body: {
-                corpus: corpus,
-                metadata: {
-                    nmb_of_centroids: nmb_of_centroids
-                }
-            }
+          corpus: corpus,
+          metadata: {
+              nmb_of_centroids: nmb_of_centroids
+          }
         }
       end
 
