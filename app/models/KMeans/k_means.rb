@@ -5,8 +5,12 @@ class KMeans
   #TODO: I think there is an optimization available: I could add the inverse document frequency of the terms in the set  of terms since that's a metric whose value is the same regardless the document
 
   NUMBER_OF_CENTROIDS_EXCEPTION = "The service cannot infer the number of centroids for Kmeans algorithm. Please read the documentation and add the required metadata"
-  TOO_MANY_CENTROIDS_EXCEPTION = "There amount of centroids cannot be greater than the amount of documents"
+  TOO_MANY_CENTROIDS_EXCEPTION = "The amount of centroids cannot be greater than the amount of documents"
   REPEATED_DOCUMENTS_EXCEPTION = "There were repeated documents in the request"
+  MISSING_DOCUMENTS_EXCEPTION = "There must be at least 2 documents to cluster"
+
+  MINIMUM_AMOUNT_OF_DOCUMENTS_PERMITED = 2
+
   NAME_WEIGHT_HEURISTIC = 200
   KEYWORDS_WEIGHT_HEURISTIC = 1000
   KEYWORDS_AMOUNT_WEIGHT_HEURISTIC = 9
@@ -212,11 +216,14 @@ class KMeans
   end
 
   def validate_input(input_corpus, metadata)
-    validate_absence_of_repeated_documents(input_corpus)
+    amounts_related_validations(input_corpus)
     validate_metadata(metadata)
   end
 
-  def validate_absence_of_repeated_documents(input_corpus)
+  def amounts_related_validations(input_corpus)
+    if input_corpus.count < KMeans::MINIMUM_AMOUNT_OF_DOCUMENTS_PERMITED
+      raise KMeans::MISSING_DOCUMENTS_EXCEPTION
+    end
     if input_corpus.count != Set.new(input_corpus.map{ |document_hash| document_hash[:document]}).count
       raise KMeans::REPEATED_DOCUMENTS_EXCEPTION
     end
