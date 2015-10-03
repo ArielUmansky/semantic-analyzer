@@ -74,13 +74,11 @@ RSpec.describe "Analyzer", :type => :request do
     context "when request is correct" do
       let(:req_params) do
         {
-            body: {
                 corpus: corpus,
                 algorithm: algorithm,
                 metadata: {
                   nmb_of_centroids: 2
                 }
-            }
         }
       end
 
