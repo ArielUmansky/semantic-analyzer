@@ -1,6 +1,6 @@
 require 'require_all'
 
-require_all "app/models/"
+require_all "app/models/KMeans/"
 
 class Analyzer
 
@@ -29,7 +29,6 @@ class Analyzer
 
   def presenter_class
     @algorithm.presenter_class
-
   end
 
   def default_algorithm
