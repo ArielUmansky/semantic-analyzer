@@ -48,7 +48,6 @@ RSpec.describe Cluster do
 
   end
 
-
   describe "#calculate_mean_vector_space" do
 
     subject { cluster.calculate_mean_vector_space }
@@ -87,7 +86,6 @@ RSpec.describe Cluster do
     let(:cluster1) { Cluster.new }
     let(:cluster2) { Cluster.new }
 
-
     subject { cluster1.same_centroid?(cluster2) }
 
     context "when cluster's centroids are different" do
@@ -97,7 +95,6 @@ RSpec.describe Cluster do
         cluster2.add_document document_vector2
         expect( subject ).to be false
       end
-
 
     end
 
@@ -128,4 +125,5 @@ RSpec.describe Cluster do
     end
 
   end
+
 end
