@@ -2,11 +2,9 @@ class AnalyzerController < ApplicationController
 
   def perform
     begin
-      #binding.pry
       check_params
-      analyzer = Analyzer.new
-      result_set = analyzer.perform(params[:corpus], params[:algorithm], params[:metadata])
-      render json: { result_set: analyzer.presenter_class.new(result_set), algorithm: analyzer.algorithm }
+      AnalyzerJob.new.async.perform(params[:corpus], params[:algorithm], params[:metadata], params[:url])
+      render json: { info: "Acknowledged message. The result will be posted at #{params[:url]}" }, status: 200
     rescue ActionController::ParameterMissing, RuntimeError => e
       render json: { error: e.message }, status: 422
     end
@@ -28,7 +26,7 @@ class AnalyzerController < ApplicationController
        end
      end
 
-     params.permit(:algorithm, :metadata)
+     params.permit(:algorithm, :metadata, :url)
   end
 
 end

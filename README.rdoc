@@ -16,6 +16,7 @@ The service is implemented in such a way that will be easy to add new algorithms
 The body admits the following parameters:
 
     {   
+     url: // This field will be used by the analyzer to post the results of the clustering.
      algorithm: ... // Optional. Should be one of the algorithms supported.
                The service uses Kmeans by default if the client doesn't specify any
                
@@ -40,6 +41,20 @@ The body admits the following parameters:
               
               ]
     }
+
+Given that the whole process of clustering a large corpus of texts may take a while, the service is implemented in such a way that a request to this endpoint returns the control to the client as soon as the service checked that the request is valid and finished the schedule of the job. 
+
+In a successful scenario, the client should receive this: 
+
+    { info: "Acknowledged message. The result will be posted at THE_URL_CONFIGURED_IN_THE_REQUEST" }
+    
+This is the structure of the body in the response in case of an error happens:
+
+    { error: "error_message" }
+
+=====Generic Validations
+* There must be at least two documents in the request
+* The user cannot set identical documents in the equest
     
 This is the structure of the body in the response in case of a successful scenario:
 
@@ -62,17 +77,6 @@ This is the structure of the body in the response in case of a successful scenar
                
              ]
     }
-
-This is the structure of the body in the response in case of an error happens:
-
-    {   
-      error: "error_message"
-    }
-
-=====Generic Validations
-* The number of centroids cannot be greater than the amount of documents in the corpus. 
-* There must be at least two documents in the request
-* The user cannot set identical documents in the equest
     
 The algorithms supported so far are: 
 
@@ -91,6 +95,7 @@ This algorithm requires the amount of clusters before its execution. Therefore, 
     }
 
 ======Kmeans Validations
+* The number of centroids cannot be greater than the amount of documents in the corpus. 
 * If the user doesn't specify one if this fields in the metadata, the user will receive HTTP Status 422: Unprocessable Entity. 
 
 
