@@ -42,7 +42,7 @@ The body admits the following parameters:
               ]
     }
 
-Given that the whole process of clustering a large corpus of texts may take a while, the service is implemented in such a way that a request to this endpoint returns the control to the client as soon the service checked that the request is valid and finished the schedule of the job. 
+Given that the whole process of clustering a large corpus of texts may take a while, the service is implemented in such a way that a request to this endpoint returns the control to the client as soon as the service checked that the request is valid and finished the schedule of the job. 
 
 In a successful scenario, the client should receive this: 
 
@@ -50,9 +50,7 @@ In a successful scenario, the client should receive this:
     
 This is the structure of the body in the response in case of an error happens:
 
-    {   
-      error: "error_message"
-    }
+    { error: "error_message" }
 
 =====Generic Validations
 * There must be at least two documents in the request
