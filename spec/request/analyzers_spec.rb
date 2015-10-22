@@ -122,19 +122,6 @@ RSpec.describe "Analyzer", :type => :request do
 
     context "when the request is correct" do
 
-      shared_examples :returns_ok_as_soon_as_possible do
-
-        it "returns status ok" do
-          subject
-          expect(response).to have_http_status(:ok)
-        end
-
-        it "informs where the analyzer will post the result" do
-          subject
-          expect(JSON.parse(response.body)["info"].include?(url)).to be true
-        end
-      end
-
       let(:req_params) do
         {
             corpus: corpus,
@@ -155,7 +142,16 @@ RSpec.describe "Analyzer", :type => :request do
         stub_request(:post, url)
       }
 
-      include_examples :returns_ok_as_soon_as_possible
+      it "returns status ok" do
+        subject
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "informs where the analyzer will post the result" do
+        subject
+        expect(JSON.parse(response.body)["info"].include?(url)).to be true
+      end
+
 
     end
 

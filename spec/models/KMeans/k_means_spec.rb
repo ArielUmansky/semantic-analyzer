@@ -297,10 +297,7 @@ RSpec.describe KMeans do
         let(:number_of_centroids) { 3 }
         let(:categories) { [politica, deportes, internacionales, espectaculos]}
 
-        it "generates an array whose size is equals to the number of centroids" do
-          centroids = subject
-          expect(centroids.count).to eq(number_of_centroids)
-        end
+        include_examples :generates_an_array_whose_size_is_equals_to_the_number_of_centroids
 
         it "there will be a centroid for each category limited by the number of centroids" do
           centroids = subject
