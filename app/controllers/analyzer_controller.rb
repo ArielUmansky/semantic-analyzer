@@ -5,7 +5,7 @@ class AnalyzerController < ApplicationController
       check_params
       AnalyzerJob.new.async.perform(params[:corpus], params[:algorithm], params[:metadata], params[:url])
       render json: { info: "Acknowledged message. The result will be posted at #{params[:url]}" }, status: 200
-    rescue ActionController::ParameterMissing, RuntimeError => e
+    rescue ActionController::ParameterMissing => e
       render json: { error: e.message }, status: 422
     end
   end
