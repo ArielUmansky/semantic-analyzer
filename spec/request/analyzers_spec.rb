@@ -1,6 +1,5 @@
 require "rails_helper"
 require 'webmock/rspec'
-require 'sucker_punch/testing/inline'
 
 RSpec.describe "Analyzer", :type => :request do
 
@@ -8,7 +7,7 @@ RSpec.describe "Analyzer", :type => :request do
 
     subject { post("/analyzer", req_params, nil) }
 
-    let(:url) { "https://www.campanarium.com.ar/semantic_analyzer_result" }
+    let!(:url) { "https://www.campanarium.com.ar/semantic_analyzer_result" }
 
     context "when there are problems with the request" do
 
@@ -77,44 +76,6 @@ RSpec.describe "Analyzer", :type => :request do
           include_examples :fails_correctly
 
         end
-
-      end
-
-      context "when there are documents repeated" do
-        let(:req_params) do
-          {
-              corpus: corpus,
-              metadata: {
-                  nmb_of_centroids: 2
-              }
-          }
-        end
-
-        let(:corpus) { [ { document: "foo", category: "politics", keywords: ["foo"]},
-                         { document:"foo", category: "sports", keywords: ["bar"]} ] }
-
-        let(:error_message){ KMeans::REPEATED_DOCUMENTS_EXCEPTION }
-
-        include_examples :fails_correctly
-
-      end
-
-      context "when there is only one document in the request" do
-
-        let(:req_params) do
-          {
-              corpus: corpus,
-              metadata: {
-                  nmb_of_centroids: 2
-              }
-          }
-        end
-
-        let(:corpus) { [ {document: "foo", category: "politics", keywords: ["foo"]} ] }
-
-        let(:error_message){ KMeans::MISSING_DOCUMENTS_EXCEPTION }
-
-        include_examples :fails_correctly
 
       end
 
